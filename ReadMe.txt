@@ -27,13 +27,3 @@ The application utilizes SSL as the top layer of security or first pass. It then
 
 If there is anything wrong with this implementation of AES or how to do encryption of data over the web please let me know and I will do my best to fix it. 
 
-
-A short TODO list:
-
-- Add in encrypted file sharing
-- Add in encrypted Voice Chat
-- Add in error handling(null data recieved etc...)
-- Ensure best practices
-- Add in more server security (length checking ensuring correct data values etc...)
-- Add in client side validation and requirments
-- Ensure AES is implemented correctly and as securely as possible
