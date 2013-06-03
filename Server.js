@@ -186,7 +186,3 @@ io.sockets.on('connection', function (socket) {
 
     //TODO:: Implement Voice Chat.
 });
-
-//Echo server addresses after initalization.
-console.log("Http Server running at http://127.0.0.1:8000/.");
-console.log("Https Server running at https://127.0.0.1:8001/.");

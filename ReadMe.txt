@@ -13,13 +13,22 @@ The application works based on a shared room and password. This allows the serve
 This is in no way a finished product however it is the beginning of one please let me know of any glaring issues or features you would like added or removed. The idea of the project is to build a lightweight server/client platform that can be run and utilized on almost an hardware and software combination. To give people the opportunity to have their own encrypted chat networks for whatever it is they want to talk about. Privacy is a human right and extends to everyone in this world, and as such people should have access to a free way to ensure that right is upheald.
 
 
-In order to use this application you can visit https://69.248.167.141:8001/
+In order to use this application you can visit https://69.248.167.141:8001/ or http://69.248.167.141:8000/ which will redirect to the https server.
 
 If you would like to build your own application you will need to change only one line of the "Client.js" file which is the Socket-io connection line.
 
 It will appear like so in the file: "Socket = io.connect('https://69.248.167.141:8001', { secure: true });"
 
 This will need to be changed to "Socket = io.connect('Your Host', { secure: true });"
+
+You can change the ports by going into Server.js and changing at the top of the file in "Var declerations"
+
+    insecure = require('http').createServer(http).listen(8000),
+    secure = require('https').createServer(creds, https).listen(8001),
+to
+    insecure = require('http').createServer(http).listen(YourHttpPort),
+    secure = require('https').createServer(creds, https).listen(YourSecureHttpsPort),
+
 
 An explanation of the encryption aspect:
 
