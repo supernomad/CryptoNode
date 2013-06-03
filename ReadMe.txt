@@ -16,3 +16,12 @@ If you would like to build your own application you will need to change only one
 It will appear like so in the file: "Socket = io.connect('https://69.248.167.141:8001', { secure: true });"
 
 This will need to be changed to "Socket = io.connect('Your Host', { secure: true });"
+
+A short TODO list:
+
+- Add in encrypted file sharing
+- Add in encrypted Voice Chat
+- Add in error handling(null data recieved etc...)
+- Ensure best practices
+- Add in more server security (length checking ensuring correct data values etc...)
+- Add in client side validation and requirments
