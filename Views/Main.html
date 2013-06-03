@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>CryptoNode - Messenger</title>
+
+        <!-- Meta -->
+        <meta charset="utf-8" />
+        
+        <!-- Script Library Includes -->
+        <script type="text/javascript" src="/Scripts/Libs/jquery-2.0.1.js"></script>
+        <script type="text/javascript" src="/Scripts/Libs/handlebars-1.0.0-rc.4.js"></script>
+        <script type="text/javascript" src="/Scripts/Libs/ember-1.0.0-rc.4.js"></script>
+        <script type="text/javascript" src="/Scripts/Libs/aes.js"></script>
+        <script type="text/javascript" src="/Scripts/Libs/pbkdf2.js"></script>
+        <script type="text/javascript" src="/Scripts/Libs/socket.io.js"></script>
+        <script type="text/javascript" src="/Scripts/Libs/moment.js"></script>
+
+        <!-- Style/Icon Includes -->
+        <link rel="shortcut icon" href="/Images/favicon.ico" />
+        <link rel="stylesheet" href="/Styles/Client.css" />
+    </head>
+    <body>
+        <!-- Custom Scripts -->
+        <script type="text/javascript" src="/Scripts/Client.js"></script>
+        <!-- Ember Application -->
+
+        <!-- Main application template -->
+        <script type="text/x-handlebars">
+            {{outlet}}
+        </script>
+
+        <!-- Index template -->
+        <script type="text/x-handlebars" id="index">
+            <div class="cont">
+            	<div class="start">
+                    <div class="left">
+                        <h1>CryptoNode</h1>
+                        <h3>A SSL and AES-256 secured messenger application.</h3>
+                        <div class="bShadow" style="padding:10px;">
+                            <p>This application utilizes SSL/TLS to encrypt web socket communication to and from the server. It then uses AES-256 ciphers to encrypt each individual message, file and/or voice stream before it is sent over the SSL connection. The AES-256 cipher seceret key is never known to the server or ever leaves the client memory.</p>
+                            <p>This will not protect against keyloggers or malicious people you may be talking to with this application. Nothing is completely secure, however this is a tool that is here for anyone to use. The idea is to promote internet freedom and to keep the last bits of our web privacy.</p>
+                            <p>The application is planned to be deployed into a TOR hidden service to increase annonymity between users. This will be done on the first public release of the application.</p>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <ul>
+                        	<li>
+                                <h3>Create a new Node.</h3>
+                        		<ul class="bShadow">
+                        			<li><label for="">Username:</label></li>
+                        			<li>{{view 'App.UserInfoTextField' valueBinding='name' autofocus='autofocus'}}</li>
+                        			<li><label for="">Node:</label></li>
+                        			<li>{{view 'App.UserInfoTextField' valueBinding='currentRoom.name'}}</li>
+                        			<li><label for="">Password:</label></li>
+                        			<li>{{view 'App.UserInfoTextField' type='password' valueBinding='currentRoom.password'}}</li>
+                                    <li><button {{action 'startNew'}}>Start</button></li>
+                        		</ul>
+                        	</lI>
+                        </ul>
+                    </div>
+            	</div>
+            </div>
+        </script>
+
+        <!-- Main chat template -->
+        <script type="text/x-handlebars" id="chat">
+            <img class="logo" src="/Images/logo.png" height="50" width="300"/>
+            <div class="side">
+                <ul>
+                    <li>
+                        {{partial "userlist"}}
+                    </li>
+                </ul>
+                <div>
+                    <img src="/Images/Icons/disconnect.png" height="36" width="36" alt="disconnect" title="Disconnect" {{action 'disconnect'}}/>
+                    <img src="/Images/Icons/settings.png" height="36" width="36" alt="settings" title="Settings" {{action 'showSettings'}}/>
+                    {{#if status}}
+                        <img src="/Images/Icons/here.png" height="36" width="36" alt="status" title="Toggle Status" {{action 'changeStatus'}}/>
+                    {{else}}
+                        <img src="/Images/Icons/away.png" height="36" width="36" alt="status" title="Toggle Status" {{action 'changeStatus'}}/>
+                    {{/if}}
+                </div>
+            </div>
+            <div class="main">
+                {{partial "chatlist"}}
+            </div>
+            <div class="input" >
+                {{view 'App.MessageTextField' valueBinding='newMessage' id='newMsg' autofocus="autofocus"}}
+                <div><img src="/Images/Icons/send.png" height="36" width="36" {{action 'sendChat' }}"/></div>
+            </div>
+        </script>
+
+        <!-- User list chat parital -->
+        <script type="text/x-handlebars" id="_userlist">
+            <strong>Users:</strong>
+            <ul id="userList">
+                {{#each user in currentRoom.users}}
+                    {{#view 'App.UserListView' }}
+                        <div>   
+                            <strong>{{user.name}}</strong>
+                            {{#if user.status}}
+                                <img src="/Images/Icons/hereb.png" height="22" width="22" alt="Send File" title="{{unbound user.name}} is available" style="float:left"/>
+                            {{else}}
+                                <img src="/Images/Icons/awayb.png" height="22" width="22" alt="Send File" title="{{unbound user.name}} is away" style="float:left"/>
+                            {{/if}}
+                            <img src="/Images/Icons/attach.png" height="22" width="22" alt="Send File" title="Send a file to {{unbound user.name}}" {{action showFileUpload target='view'}} />
+                            <img src="/Images/Icons/mic.png" height="22" width="22" alt="Voice Chat" title="Start voice chat with {{unbound user.name}}" />
+                        </div>
+                    {{/view}}
+                {{/each}}
+            </ul>
+        </script>
+
+        <!-- Message list chat partial -->
+        <script type="text/x-handlebars" id="_chatlist">
+            <ul id="chatList" >
+                {{#each message in currentRoom.messages}}
+                    {{#view 'App.ChatListView'}}
+                        {{#unless message.fromServer}}
+                            <strong>{{message.name}}:</strong>
+                        {{/unless}}
+                        <p>{{message.message}}</p>
+                        <em>{{timeForm message.postedAt timeBinding='currentTime'}}</em>                    
+                    {{/view}}
+                {{/each}}
+            </ul>
+        </script>
+    </body>
+</html>
