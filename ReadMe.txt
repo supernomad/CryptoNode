@@ -6,7 +6,7 @@ The client uses Ember.js to handle templates and properties, while using CryptoJ
 
 The application works based on a shared room and password. This allows the server to remain completely unaware of the password or what any of the encrypted messages mean.
 
-This is in no way a finished product however it is the beginning of one please let me know of any glaring issues or features you would like added or removed.
+This is in no way a finished product however it is the beginning of one please let me know of any glaring issues or features you would like added or removed. The idea of the project is to build a lightweight server/client platform that can be run and utilized on almost an hardware and software combination. To give people the opportunity to have their own encrypted chat networks for whatever it is they want to talk about. Privacy is a human right and extends to everyone in this world, and as such people should have access to a free way to ensure that right is upheald.
 
 
 In order to use this application you can visit https://69.248.167.141:8001/
