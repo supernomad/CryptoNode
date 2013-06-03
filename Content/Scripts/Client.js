@@ -228,12 +228,6 @@ App.ChatRoute = Ember.Route.extend({
 App.ChatController = Ember.ObjectController.extend({
     newMessage: "",
 
-    showSettings: false,
-
-    showInfo: false,
-
-    chatListHeight: 0,
-
     sendChat: function () {
         var currentRoom = App.CurrentClient.get('currentRoom');
         var name = App.CurrentClient.get('name');
@@ -276,10 +270,6 @@ App.ChatController = Ember.ObjectController.extend({
             status: status
         });
     },
-
-    showInfo: function () { },
-
-    showSettings: function () { }
 });
 
 //Ember Views
@@ -305,6 +295,7 @@ App.UserInfoTextField = Ember.TextField.extend({
 
 App.ChatListView = Ember.View.extend({
     tagName: 'li',
+
     didInsertElement: function () {
         $('#chatList').scrollTop(1000000000);
         this._super();
@@ -324,6 +315,7 @@ App.UserListView = Ember.View.extend({
 
     }
 });
+
 //Ember Formatters
 Ember.Handlebars.registerBoundHelper('timeForm', function (data, options) {
     var time = options.hash.time;
@@ -356,7 +348,8 @@ Socket.on('removeUser', function (data) {
 
 Socket.on('updateUser', function (data) {
     if (data && data.name && data.id && data.status) {
-        App.CurrentClient.get('currentRoom').get('users').find({ id: data.id }).set('status', data.status);
+        var users = App.CurrentClient.get('currentRoom').get('users');
+        users.find({ id: data.id }).set('status', data.status);
     } else {
         //TODO:: implement server data null error.
     }
