@@ -1,4 +1,6 @@
-﻿This project contains the start of an ecnrypted chat program written in Node.js and Ember.js.
+﻿CrytpoNode - Encrypted Messenger
+
+This project contains the start of an ecnrypted chat program written in Node.js and Ember.js.
 
 The server is written in Node.js utilizing the socket-io library for realtime updates of information.
 
