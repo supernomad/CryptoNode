@@ -2,6 +2,8 @@
 
 This project contains the start of an ecnrypted chat program written in Node.js and Ember.js.
 
+All server code is contained within Server.js, and all of the client Ember code is contained within /Content/Scripts/Client.js
+
 The server is written in Node.js utilizing the socket-io library for realtime updates of information.
 
 The client uses Ember.js to handle templates and properties, while using CryptoJS for encryption of individual messages.
