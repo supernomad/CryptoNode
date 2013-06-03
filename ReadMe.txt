@@ -2,7 +2,7 @@
 
 The server is written in Node.js utilizing the socket-io library for realtime updates of information.
 
-The client uses Ember.js to handle templates an properties and CryptoJS for encryption of individual messages.
+The client uses Ember.js to handle templates and properties, while using CryptoJS for encryption of individual messages.
 
 The application works based on a shared room and password. This allows the server to remain completely unaware of the password or what any of the encrypted messages mean.
 
