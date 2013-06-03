@@ -33,30 +33,60 @@
         <script type="text/x-handlebars" id="index">
             <div class="cont">
             	<div class="start">
+                    <img src="/Images/logo.png" height="50" width="300" title="CryptoNode" alt="Cryptonode"/>
                     <div class="left">
-                        <h1>CryptoNode</h1>
                         <h3>A SSL and AES-256 secured messenger application.</h3>
-                        <div class="bShadow" style="padding:10px;">
+                        <div>
                             <p>This application utilizes SSL/TLS to encrypt web socket communication to and from the server. It then uses AES-256 ciphers to encrypt each individual message, file and/or voice stream before it is sent over the SSL connection. The AES-256 cipher seceret key is never known to the server or ever leaves the client memory.</p>
                             <p>This will not protect against keyloggers or malicious people you may be talking to with this application. Nothing is completely secure, however this is a tool that is here for anyone to use. The idea is to promote internet freedom and to keep the last bits of our web privacy.</p>
                             <p>The application is planned to be deployed into a TOR hidden service to increase annonymity between users. This will be done on the first public release of the application.</p>
                         </div>
                     </div>
                     <div class="right">
-                        <ul>
-                        	<li>
-                                <h3>Create a new Node.</h3>
-                        		<ul class="bShadow">
-                        			<li><label for="">Username:</label></li>
-                        			<li>{{view 'App.UserInfoTextField' valueBinding='name' autofocus='autofocus'}}</li>
-                        			<li><label for="">Node:</label></li>
-                        			<li>{{view 'App.UserInfoTextField' valueBinding='currentRoom.name'}}</li>
-                        			<li><label for="">Password:</label></li>
-                        			<li>{{view 'App.UserInfoTextField' type='password' valueBinding='currentRoom.password'}}</li>
-                                    <li><button {{action 'startNew'}}>Start</button></li>
-                        		</ul>
-                        	</lI>
-                        </ul>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <h3>Create or Join a new Node.</h3>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <td>
+                                    <label for="">Username:</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {{view 'App.UserInfoTextField' valueBinding='name' autofocus='autofocus'}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="">Node:</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {{view 'App.UserInfoTextField' valueBinding='currentRoom.name'}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="">Password:</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {{view 'App.UserInfoTextField' type='password' valueBinding='currentRoom.password'}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <button {{action 'startNew'}}>Start</button>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
             	</div>
             </div>
@@ -95,16 +125,16 @@
             <strong>Users:</strong>
             <ul id="userList">
                 {{#each user in currentRoom.users}}
-                    {{#view 'App.UserListView' }}
+                    {{#view 'App.UserListView' modelBinding='user' }}
                         <div>   
-                            <strong>{{user.name}}</strong>
-                            {{#if user.status}}
-                                <img src="/Images/Icons/hereb.png" height="22" width="22" alt="Send File" title="{{unbound user.name}} is available" style="float:left"/>
+                            <strong>{{model.name}}</strong>
+                            {{#if model.status}}
+                                <img src="/Images/Icons/hereb.png" height="22" width="22" alt="Send File" title="{{unbound model.name}} is available" style="float:left"/>
                             {{else}}
-                                <img src="/Images/Icons/awayb.png" height="22" width="22" alt="Send File" title="{{unbound user.name}} is away" style="float:left"/>
+                                <img src="/Images/Icons/awayb.png" height="22" width="22" alt="Send File" title="{{unbound model.name}} is away" style="float:left"/>
                             {{/if}}
-                            <img src="/Images/Icons/attach.png" height="22" width="22" alt="Send File" title="Send a file to {{unbound user.name}}" {{action showFileUpload target='view'}} />
-                            <img src="/Images/Icons/mic.png" height="22" width="22" alt="Voice Chat" title="Start voice chat with {{unbound user.name}}" />
+                            <img src="/Images/Icons/attach.png" height="22" width="22" alt="Send File" title="Send a file to {{unbound model.name}}" {{action sendFile target='view'}} />
+                            <img src="/Images/Icons/mic.png" height="22" width="22" alt="Voice Chat" title="Start voice chat with {{unbound model.name}}" />
                         </div>
                     {{/view}}
                 {{/each}}

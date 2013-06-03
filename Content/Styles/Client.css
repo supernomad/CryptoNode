@@ -53,17 +53,23 @@ ul {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 550px;
-    width: 800px;
+    height:550px;
+    width: 700px;
     margin: auto;
     padding: 0;
-    color: gray;
     background: rgb(107, 107, 107);
     -webkit-box-shadow: 4px 4px 9px rgba(50, 50, 50, 0.75);
     -moz-box-shadow: 4px 4px 9px rgba(50, 50, 50, 0.75);
     box-shadow: 4px 4px 9px rgba(50, 50, 50, 0.75);
 }
-
+.start img{
+    
+    position:absolute;
+    top:10px;
+    left:200px;
+    right:200px;
+    height:50px;
+}
     .start input {
         width: 200px;
     }
@@ -74,23 +80,35 @@ ul {
 
     .start > div {
         position: absolute;
-        top: 0;
+        top: 60px;
         bottom: 0;
-        width: 46%;
+        width: 44%;
         margin: 0;
-        padding: 2%;
+        padding: 3%;
     }
 
 div.left {
     left: 0;
 }
 
+    div.left div{
+        margin-bottom:1em;
+    }
+
 div.right {
     right: 0;
 }
 
-    div.right > ul > li > ul {
-        margin: 0;
+    div.right table {
+        position:absolute;
+        top:0;
+        left:0;
+        right:0;
+        bottom:0;
+        height: 270px;
+        width: 270px;
+        text-align:center;
+        margin: auto;
         padding: 15px;
     }
 

@@ -172,7 +172,7 @@ io.sockets.on('connection', function (socket) {
     socket.on('changeStatus', function (data) {
         if (data) {
             socket.broadcast.to(socket.room).emit('updateChat', { name: "SERVER", message: (data.status) ? (data.name + " is now available.") : (data.name + " is now busy."), postedAt: new Date() });
-            socket.broadcast.to(socket.room).emit('updateUser', data);
+            io.sockets.to(socket.room).emit('updateUser', {name: data.name , id: socket.id, status:data.status });
         }
     });
 

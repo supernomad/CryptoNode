@@ -268,7 +268,6 @@ App.ChatController = Ember.ObjectController.extend({
 
     changeStatus: function () {
         App.CurrentClient.set('status', !App.CurrentClient.get('status'));
-
         var name = App.CurrentClient.get('name');
         var status = App.CurrentClient.get('status');
 
@@ -314,6 +313,8 @@ App.ChatListView = Ember.View.extend({
 
 App.UserListView = Ember.View.extend({
     tagName: 'li',
+
+    model:null,
 
     sendFile: function () {
 
