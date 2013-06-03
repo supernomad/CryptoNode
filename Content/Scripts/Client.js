@@ -271,6 +271,9 @@ App.UserListView = Ember.View.extend({
     showFileUpload: function () {
     },
     sendFile: function () {
+    },
+    startVoiceChat: function () {
+
     }
 });
 //Ember Formatters
