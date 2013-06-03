@@ -269,7 +269,6 @@ App.UserListView = Ember.View.extend({
     tagName: 'li',
 
     showFileUpload: function () {
-        this.$().children('div.upload').slideToggle(100);
     },
     sendFile: function () {
     }
