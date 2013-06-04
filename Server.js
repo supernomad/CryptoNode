@@ -36,8 +36,8 @@ function isFunction(x) {
 //Var declerations.
 var fs = require('fs'),
     exp = require('express'),
-    https = exp(),
     http = exp(),
+    https = exp(),
     sslKey = fs.readFileSync('./SSL/privatekey.pem').toString(),
     sslCert = fs.readFileSync('./SSL/certificate.pem').toString(),
     creds = { key: sslKey, cert: sslCert },
