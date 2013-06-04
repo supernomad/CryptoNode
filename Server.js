@@ -28,6 +28,11 @@ Array.prototype.Remove = function (searchTerm, property) {
     }
 };
 
+//Function check.
+function isFunction(x) {
+    return Object.prototype.toString.call(x) == '[object Function]';
+}
+
 //Var declerations.
 var fs = require('fs'),
     exp = require('express'),
@@ -82,8 +87,9 @@ https.get('/', function (request, response) {
 //Web Socket configuration.
 io.sockets.on('connection', function (socket) {
     socket.on('setupUser', function (data, callback) {
-        if (data && callback) {
+        if (data && callback && isFunction(callback) && data.room) {
             var emitData;
+
             if (rooms[data.room]) {
                 emitData = {
                     roomExists: true,
@@ -95,22 +101,23 @@ io.sockets.on('connection', function (socket) {
                     salt: null
                 };
             }
+
             callback(emitData);
         } else {
-            //TODO:: null data error.
+            socket.emit('nullDataError');
         }
     });
 
     socket.on('createRoom', function (data) {
-        if (data) {
+        if (data && data.room && data.salt) {
             rooms[data.room] = new roomModel(data.salt);
         } else {
-            //TODO:: null data error.
+            socket.emit('nullDataError');
         }
     });
 
     socket.on('checkName', function (data, callback) {
-        if (data) {
+        if (data && data.username && callback && isFunction(callback)) {
             var ext = false;
             for (var i in rooms) {
                 if (rooms[i].users.ObjectIndexOf(data.username, 'user') !== -1) {
@@ -122,11 +129,13 @@ io.sockets.on('connection', function (socket) {
                 socket.username = data.username;
             }
             callback({ nameExists: ext });
+        } else {
+            socket.emit('nullDataError');
         }
     });
 
     socket.on('joinRoom', function (data, joinCall) {
-        if (data) {
+        if (data && data.name && data.room && joinCall && isFunction(joinCall)) {
             if (rooms[data.room]) {
                 socket.join(data.room);
 
@@ -142,10 +151,10 @@ io.sockets.on('connection', function (socket) {
 
                 joinCall({ users: rooms[data.room].users });
             } else {
-                //TODO:: null room error;
+                //TODO:: Room not found error;
             }
         } else {
-            //TODO:: null data error.
+            socket.emit('nullDataError');
         }
         
     });
@@ -164,24 +173,36 @@ io.sockets.on('connection', function (socket) {
     });
 
     socket.on('sendChat', function (data) {
-        if (data) {
+        if (data && data.name && data.message && data.postedAt) {
             io.sockets.to(socket.room).emit('updateChat', data);
+        } else {
+            socket.emit('nullDataError');
         }
     });
 
     socket.on('changeStatus', function (data) {
-        if (data) {
+        if (data && data.name && data.status) {
             socket.broadcast.to(socket.room).emit('updateChat', { name: "SERVER", message: (data.status) ? (data.name + " is now available.") : (data.name + " is now busy."), postedAt: new Date() });
             io.sockets.to(socket.room).emit('updateUser', {name: data.name , id: socket.id, status:data.status });
+        } else {
+            socket.emit('nullDataError');
         }
     });
 
     socket.on('sendFile', function (data) {
+        if (data) {
 
+        } else {
+            socket.emit('nullDataError');
+        }
     });
 
     socket.on('sendPrivateMessage', function (data) {
+        if (data) {
 
+        } else {
+            socket.emit('nullDataError');
+        }
     });    
 
     //TODO:: Implement Voice Chat.

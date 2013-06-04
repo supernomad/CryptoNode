@@ -213,21 +213,25 @@ App.IndexController = Ember.ObjectController.extend({
     }
 });
 
+//Setup of Chat Index
+//Set model to App.CurrentClient from the index, then set the models background worker.
 App.ChatRoute = Ember.Route.extend({
     model: function () {
         return App.CurrentClient;
     },
     setupController: function (controller, model) {
-        controller.set('content', model);
         model.set('backgroundWorker', setInterval(function () {
             model.set('currentTime', new Date());
         }, 30000));
+        controller.set('content', model);
     }
 });
 
+//Implement the Chat events and newMessage container.
 App.ChatController = Ember.ObjectController.extend({
     newMessage: "",
 
+    //Sends a new chat message to the server.
     sendChat: function () {
         var currentRoom = App.CurrentClient.get('currentRoom');
         var name = App.CurrentClient.get('name');
@@ -249,6 +253,7 @@ App.ChatController = Ember.ObjectController.extend({
         Em.$("#newMsg").focus();
     },
 
+    //Called to disconnect  from the server.
     disconnect: function () {
         clearInterval(this.get('backgroundWorker'));
 
@@ -260,6 +265,7 @@ App.ChatController = Ember.ObjectController.extend({
         document.location = "https://69.248.167.141:8001";
     },
 
+    //Called to toggle the users chat status.
     changeStatus: function () {
         App.CurrentClient.set('status', !App.CurrentClient.get('status'));
         var name = App.CurrentClient.get('name');
@@ -381,4 +387,8 @@ Socket.on('updateChat', function (data) {
     } else {
         //TODO:: implement server data null error.
     }
+});
+
+Socket.on('nullDataError', function () {
+
 });
