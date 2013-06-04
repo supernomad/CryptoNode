@@ -156,7 +156,6 @@ io.sockets.on('connection', function (socket) {
         } else {
             socket.emit('nullDataError');
         }
-        
     });
 
     socket.on('disconnect', function () {
