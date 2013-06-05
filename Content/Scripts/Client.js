@@ -90,7 +90,7 @@ App.Client = App.User.extend({
             length: { minimum: 2, maximum: 10, messages: { minimum: 'Username should be more than 2 characters.', maximum: 'Username should be less than 10 characters.' } }
         },
         roomname: {
-            length: { minimum: 5, maximum: 256, messages: { minimum: 'Room should be more than 5 character.', maximum: 'Room should be less than 256 characters.' } }
+            length: { minimum: 5, maximum: 256, messages: { minimum: 'Room should be more than 5 characters.', maximum: 'Room should be less than 256 characters.' } }
         },
         roompassword: {
             format: { with: RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d,.;:]).+$'), allowBlank: false, message: 'Must contain at least 1 uppercase and 1 lowercase character as well as a number or symbol.' },

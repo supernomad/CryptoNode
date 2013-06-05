@@ -97,21 +97,23 @@ https.get('/', function (request, response) {
 io.sockets.on('connection', function (socket) {
     socket.on('setupUser', function (data, callback) {
         if (data && callback && isFunction(callback) && data.room) {
-            var emitData;
+            if (typeof data.room === "string" && data.room.length >= 5 && data.room.length <= 256) {
+                var emitData;
 
-            if (rooms[data.room]) {
-                emitData = {
-                    roomExists: true,
-                    salt: rooms[data.room].salt
-                };
-            } else {
-                emitData = {
-                    roomExists: false,
-                    salt: null
-                };
+                if (rooms[data.room]) {
+                    emitData = {
+                        roomExists: true,
+                        salt: rooms[data.room].salt
+                    };
+                } else {
+                    emitData = {
+                        roomExists: false,
+                        salt: null
+                    };
+                }
+
+                callback(emitData);
             }
-
-            callback(emitData);
         } else {
             socket.emit('nullDataError');
         }
@@ -119,14 +121,15 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('createRoom', function (data) {
         if (data && data.room && data.salt) {
-            rooms[data.room] = new roomModel(data.salt);
+            if (typeof data.room === "string" && typeof data.salt === "string" && data.room.length >= 5 && data.room.length <= 256 && data.salt.length === 256)
+                rooms[data.room] = new roomModel(data.salt);
         } else {
             socket.emit('nullDataError');
         }
     });
 
     socket.on('checkName', function (data, callback) {
-        if (data && data.username && callback && isFunction(callback)) {
+        if (data && typeof data.username === "string" && callback && isFunction(callback)) {
             var ext = false;
             console.log(data.username);
             for (var i in rooms) {
@@ -145,7 +148,7 @@ io.sockets.on('connection', function (socket) {
     });
 
     socket.on('joinRoom', function (data, joinCall) {
-        if (data && data.name && data.room && joinCall && isFunction(joinCall)) {
+        if (data && typeof data.name === "string" && typeof data.room === "string" && joinCall && isFunction(joinCall)) {
             if (rooms[data.room]) {
                 socket.join(data.room);
 
@@ -182,7 +185,7 @@ io.sockets.on('connection', function (socket) {
     });
 
     socket.on('sendChat', function (data) {
-        if (data && data.name && data.message && data.postedAt) {
+        if (data && typeof data.name === "string" && typeof data.message === "string" && data.postedAt) {
             io.sockets.to(socket.room).emit('updateChat', data);
         } else {
             socket.emit('nullDataError');
@@ -190,13 +193,13 @@ io.sockets.on('connection', function (socket) {
     });
 
     socket.on('changeStatus', function (data) {
-        if (data && data.name) {
+        if (data && typeof data.name === "string" && typeof data.status === "boolean") {
             var ind = rooms[socket.room].users.ObjectIndexOf(socket.id, 'id');
-            if(ind !== -1){
+            if (ind !== -1) {
                 rooms[socket.room].users[ind].status = data.status;
                 socket.broadcast.to(socket.room).emit('updateChat', { name: "SERVER", message: (data.status) ? (data.name + " is now available.") : (data.name + " is now busy."), postedAt: new Date() });
                 io.sockets.to(socket.room).emit('updateUser', {name: data.name , id: socket.id, status:data.status });
-            }else{
+            } else {
                 socket.emit('invalidName');
             }
         } else {
