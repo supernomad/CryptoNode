@@ -139,8 +139,11 @@ App.IndexController = Ember.ObjectController.extend({
     startNew: function () {
         App.CurrentClient.validate().then(function () {
             if (App.CurrentClient.get('isValid')) {
-                var roomName = App.CurrentClient.get('currentRoom').get('name');
-
+                App.CurrentClient.set('name', App.CurrentClient.get('username'));
+                App.CurrentClient.get('currentRoom').set('password', App.CurrentClient.get('roompassword'));
+                App.CurrentClient.get('currentRoom').set('name', App.CurrentClient.get('roomname'));
+                var roomName = App.CurrentClient.get('roomname');
+                
                 //Setup first emit data packet.
                 var emitData = {
                     room: roomName
