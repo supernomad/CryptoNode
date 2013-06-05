@@ -28,7 +28,7 @@ Array.prototype.Remove = function (searchTerm, property) {
     }
 };
 
-//Function check.
+//Function check used to ensure emit callbacks are indeed functions.
 function isFunction(x) {
     return Object.prototype.toString.call(x) == '[object Function]';
 }
@@ -52,7 +52,7 @@ function userModel(Name, Id) {
     self.name = Name;
     self.id = Id;
     self.status = true;
-}
+} 
 function messageModel(User, Message, Time) {
     var self = this;
     self.name = User;
@@ -64,6 +64,15 @@ function roomModel(salt) {
     self.salt = salt;
     self.users = [];
 }
+roomModel.prototype.getUser = function (searchTerm, property) {
+    if(property && searchTerm)
+        return this.users.ObjectIndexOf(searchTerm, property);
+    else if (searchTerm)
+        return this.users.ObjectIndexOf(searchTerm)
+    else
+        throw new Error('SearchTerm must be defined.')
+        
+};
 
 //Web Server configuration.
 http.get('*', function (req, res) {
@@ -119,8 +128,9 @@ io.sockets.on('connection', function (socket) {
     socket.on('checkName', function (data, callback) {
         if (data && data.username && callback && isFunction(callback)) {
             var ext = false;
+            console.log(data.username);
             for (var i in rooms) {
-                if (rooms[i].users.ObjectIndexOf(data.username, 'user') !== -1) {
+                if (rooms[i].getUser(data.username, 'name') !== -1) {
                     ext = true;
                     break;
                 }
@@ -142,7 +152,7 @@ io.sockets.on('connection', function (socket) {
                 socket.room = data.room;
 
                 var len = rooms[data.room].users.push(new userModel(data.name, socket.id));
-
+                console.log(len);
                 io.sockets.to(data.room).emit('addUser', rooms[data.room].users[len - 1]);
 
                 socket.emit('updateChat', { name: "SERVER", message: "Thank you " + data.name + ". You have joined the chat in Node " + data.room, postedAt: new Date() });
@@ -180,9 +190,15 @@ io.sockets.on('connection', function (socket) {
     });
 
     socket.on('changeStatus', function (data) {
-        if (data && data.name && data.status) {
-            socket.broadcast.to(socket.room).emit('updateChat', { name: "SERVER", message: (data.status) ? (data.name + " is now available.") : (data.name + " is now busy."), postedAt: new Date() });
-            io.sockets.to(socket.room).emit('updateUser', {name: data.name , id: socket.id, status:data.status });
+        if (data && data.name) {
+            var ind = rooms[socket.room].users.ObjectIndexOf(socket.id, 'id');
+            if(ind !== -1){
+                rooms[socket.room].users[ind].status = data.status;
+                socket.broadcast.to(socket.room).emit('updateChat', { name: "SERVER", message: (data.status) ? (data.name + " is now available.") : (data.name + " is now busy."), postedAt: new Date() });
+                io.sockets.to(socket.room).emit('updateUser', {name: data.name , id: socket.id, status:data.status });
+            }else{
+                socket.emit('invalidName');
+            }
         } else {
             socket.emit('nullDataError');
         }

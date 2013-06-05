@@ -172,6 +172,9 @@ div.right {
                         float:right;
                         margin:0 2px;
                     }
+                        .side > ul > li > ul > li div img.status {
+                            margin:2px 5px;
+                        }
 
 
     .side > div {
@@ -182,7 +185,7 @@ div.right {
         height: 42px;
     }
 
-        .side > div > img {
+        .side > div  img {
             float: left;
             padding: 0;
             border: none;
@@ -265,4 +268,11 @@ div.right {
         padding: 0;
         border: none;
         margin: 3px;
+    }
+
+    .isValid{
+        color:red;
+        border:2px solid red;
+        padding:5px;
+        background-color:white;
     }

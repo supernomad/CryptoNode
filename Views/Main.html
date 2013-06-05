@@ -15,6 +15,7 @@
         <script type="text/javascript" src="/Scripts/Libs/jquery-2.0.1.js"></script>
         <script type="text/javascript" src="/Scripts/Libs/handlebars-1.0.0-rc.4.js"></script>
         <script type="text/javascript" src="/Scripts/Libs/ember-1.0.0-rc.4.js"></script>
+        <script type="text/javascript" src="/Scripts/Libs/ember-validations.js"></script>
         <!-- CryptoJS libs -->
         <script type="text/javascript" src="/Scripts/Libs/aes.js"></script>
         <script type="text/javascript" src="/Scripts/Libs/pbkdf2.js"></script>
@@ -66,9 +67,16 @@
                             </tr>
                             <tr>
                                 <td>
-                                    {{view 'App.UserInfoTextField' valueBinding='name' autofocus='autofocus'}}
+                                    {{view 'App.UserInfoTextField' valueBinding='username' autofocus='autofocus'}}
                                 </td>
                             </tr>
+                            {{#if errors.username}}
+                                <tr>
+                                    <td class="isValid">
+                                        {{errors.username}}
+                                    </td>
+                                </tr>
+                            {{/if}}
                             <tr>
                                 <td>
                                     <label for="">Node:</label>
@@ -76,9 +84,16 @@
                             </tr>
                             <tr>
                                 <td>
-                                    {{view 'App.UserInfoTextField' valueBinding='currentRoom.name'}}
+                                    {{view 'App.UserInfoTextField' valueBinding='roomname'}}
                                 </td>
                             </tr>
+                            {{#if errors.roomname}}
+                                <tr>
+                                    <td class="isValid">
+                                        {{errors.roomname}}
+                                    </td>
+                                </tr>
+                            {{/if}}
                             <tr>
                                 <td>
                                     <label for="">Password:</label>
@@ -86,9 +101,16 @@
                             </tr>
                             <tr>
                                 <td>
-                                    {{view 'App.UserInfoTextField' type='password' valueBinding='currentRoom.password'}}
+                                    {{view 'App.UserInfoTextField' type='password' valueBinding='roompassword'}}
                                 </td>
                             </tr>
+                            {{#if errors.roompassword}}
+                                <tr>
+                                    <td class="isValid">
+                                        {{errors.roompassword}}
+                                    </td>
+                                </tr>
+                            {{/if}}
                             <tr>
                                 <td>
                                     <button {{action 'startNew'}}>Start</button>
@@ -112,9 +134,9 @@
                 <div>
                     <img src="/Images/Icons/disconnect.png" height="36" width="36" alt="disconnect" title="Disconnect" {{action 'disconnect'}}/>
                     {{#if status}}
-                        <img src="/Images/Icons/here.png" height="36" width="36" alt="status" title="Toggle Status" {{action 'changeStatus'}}/>
+                        <img src="/Images/Icons/here.png" height="36" width="36" alt="status" title="Toggle Status" {{action 'changeStatus' target='controller'}}/>
                     {{else}}
-                        <img src="/Images/Icons/away.png" height="36" width="36" alt="status" title="Toggle Status" {{action 'changeStatus'}}/>
+                        <img src="/Images/Icons/away.png" height="36" width="36" alt="status" title="Toggle Status" {{action 'changeStatus' target='controller'}}/>
                     {{/if}}
                 </div>
             </div>
@@ -131,17 +153,17 @@
         <script type="text/x-handlebars" id="_userlist">
             <strong>Users:</strong>
             <ul id="userList">
-                {{#each user in currentRoom.users}}
-                    {{#view 'App.UserListView' modelBinding='user' }}
+                {{#each 'user' in 'currentRoom.users'}}
+                    {{#view 'App.UserListView' contextBinding='user'}}
                         <div>   
-                            <strong>{{model.name}}</strong>
-                            {{#if model.status}}
-                                <img src="/Images/Icons/hereb.png" height="22" width="22" alt="Send File" title="{{unbound model.name}} is available" style="float:left"/>
+                            <strong>{{name}}</strong>
+                            {{#if status}}
+                                <img class="status" src="/Images/Icons/green.png" height="16" width="16" alt="Send File" title="{{unbound name}} is available" style="float:left"/>
                             {{else}}
-                                <img src="/Images/Icons/awayb.png" height="22" width="22" alt="Send File" title="{{unbound model.name}} is away" style="float:left"/>
+                                <img class="status" src="/Images/Icons/orange.png" height="16" width="16" alt="Send File" title="{{unbound name}} is away" style="float:left"/>
                             {{/if}}
-                            <img src="/Images/Icons/attach.png" height="22" width="22" alt="Send File" title="Send a file to {{unbound model.name}}" {{action sendFile target='view'}} />
-                            <img src="/Images/Icons/mic.png" height="22" width="22" alt="Voice Chat" title="Start voice chat with {{unbound model.name}}" />
+                            <img src="/Images/Icons/attach.png" height="20" width="20" alt="Send File" title="Send a file to {{unbound name}}" {{action sendFile target='view'}} />
+                            <img src="/Images/Icons/mic.png" height="20" width="20" alt="Voice Chat" title="Start voice chat with {{unbound name}}" />
                         </div>
                     {{/view}}
                 {{/each}}
