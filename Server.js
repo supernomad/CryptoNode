@@ -76,7 +76,7 @@ roomModel.prototype.getUser = function (searchTerm, property) {
 
 //Web Server configuration.
 http.get('*', function (req, res) {
-    res.redirect('https://69.248.167.141:8001/');
+    res.redirect('https://69.142.144.48:8001/');
 });
 https.use(exp.static(__dirname + '/Content/'));
 https.get('/', function (request, response) {
@@ -164,7 +164,7 @@ io.sockets.on('connection', function (socket) {
 
                 joinCall({ users: rooms[data.room].users });
             } else {
-                //TODO:: Room not found error;
+                socket.emit('roomNameError');
             }
         } else {
             socket.emit('nullDataError');
@@ -208,8 +208,9 @@ io.sockets.on('connection', function (socket) {
     });
 
     socket.on('sendFile', function (data) {
-        if (data) {
-
+        if (data && typeof data.name === 'string' && typeof data.data === 'string') {
+            data.from = socket.id;
+            io.sockets.socket(data.destinationUser).emit('recFile', data);
         } else {
             socket.emit('nullDataError');
         }

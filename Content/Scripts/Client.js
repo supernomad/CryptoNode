@@ -1,5 +1,5 @@
-﻿/// <reference path="_vsIntellisense.js" /> 
-///
+﻿/// <reference path="./Libs/aes.js" /> 
+/// <reference path="./Libs/ember-1.0.0-rc.4.js" />
 
 //Encryption Formatter.
 var JsonFormatter = {
@@ -44,6 +44,63 @@ App.Router.map(function () {
     this.resource('chat');
 });
 
+App.Reader = {
+    files: null,
+    ind: 0,
+    readerObj: new FileReader(),
+    loadingFinsihed: false,
+    parsedFiles: [],
+    toUser: "",
+
+    onLoadCall: function (evt) {
+        var dataResultPlain = evt.target.result;
+        var key = App.CurrentClient.get('currentRoom').get('key');
+        var encrypted = CryptoJS.AES.encrypt(dataResultPlain, key, { iv: CryptoJS.lib.WordArray.random(128 / 8), format: JsonFormatter });
+        var emitData = { name: this.file.name, data: encrypted.toString(), destinationUser: App.Reader.toUser, from: App.CurrentClient.get('username') };
+        App.Reader.parsedFiles.push(emitData);
+        Socket.emit('sendFile', emitData);
+    },
+    onLoadMultiCall: function(evt){
+        var dataResultPlain = evt.target.result;
+        var key = App.CurrentClient.get('currentRoom').get('key');
+        var encrypted = CryptoJS.AES.encrypt(dataResultPlain, key, { iv: CryptoJS.lib.WordArray.random(128 / 8), format: JsonFormatter });
+        var emitData = { name: App.Reader.files[ind].name, data: encrypted.toString(), destinationUser: App.Reader.toUser, from: App.CurrentClient.get('username') };
+        App.Reader.parsedFiles.push(emitData);
+        Socket.emit('sendFile', emitData);
+
+        if (ind < files.length - 1) {
+            App.Reader.ind++;
+            App.Reader.readFile(true);
+        } 
+    },
+    readFile: function (user, isMultiple, file) {
+        if (typeof user === 'string' && typeof isMultiple === 'boolean') {
+            this.toUser = user;
+            if (isMultiple && this.files && this.files.length > 0) {
+                if (this.readerObj.onload !== this.onLoadMultiCall) {
+                    this.readerObj.onload = this.onLoadMultiCall;
+                }
+
+                this.readerObj.readAsDataURL(files[ind]);
+            } else if (file) {
+                if (this.readerObj.onload !== this.onLoadCall) {
+                    this.readerObj.onload = this.onLoadCall;
+                }
+
+                this.readerObj.file = file;
+                this.readerObj.readAsDataURL(file);
+            } else if (this.files && this.files.length > 0) {
+                if (this.readerObj.onload !== this.onLoadCall) {
+                    this.readerObj.onload = this.onLoadCall;
+                }
+
+                this.readerObj.file = files[0];
+                this.readerObj.readAsDataURL(files[0]);
+            }
+        }
+    },
+};
+
 App.User = Ember.Object.extend(Ember.Validations.Mixin);
 
 App.User.reopen({
@@ -67,6 +124,12 @@ App.Message = Ember.Object.extend({
     }.property('name'),
     //Timestamp of the message.
     postedAt: new Date()
+});
+
+App.File = Ember.Object.extend({
+    fileName: '',
+    from: '',
+    data: ''
 });
 
 App.Room = Ember.Object.extend({
@@ -275,6 +338,26 @@ App.ChatController = Ember.ObjectController.extend({
         Em.$("#newMsg").focus();
     },
 
+    filesToSend: {},
+
+    sendFile: function (file) {
+       
+    },
+
+    sendMultiFile: function (files, user, callBack) {
+        if (files && user && callBack) {
+            if (files.length > 1) {
+                //App.Reader.files = files;
+                //App.Reader.readFile(user, true);
+            } else {
+                App.Reader.readFile(user, false, files[0]);
+            }
+            callBack(user)
+        }
+    },
+
+
+
     //Called to disconnect  from the server.
     disconnect: function () {
         clearInterval(this.get('backgroundWorker'));
@@ -284,7 +367,7 @@ App.ChatController = Ember.ObjectController.extend({
         App.CurrentClient.get('currentRoom').destroy();
         App.CurrentClient.destroy();
 
-        document.location = "https://69.248.167.141:8001";
+        document.location = "https://69.142.144.48:8001";
     },
 
     //Called to toggle the users chat status.
@@ -334,12 +417,60 @@ App.ChatListView = Ember.View.extend({
 App.UserListView = Ember.View.extend({
     tagName: 'li',
 
-    sendFile: function () {
+    attributeBindings: ['userId:name'],
 
+    userId: '',
+
+    recievedFile: false,
+
+    toggleFileUp: function () {
+        this.$('div.fileUp').slideToggle(350);
+    },
+
+    toggleFileDown: function () {
+        this.$('div.fileDown').slideToggle(200);
+    },
+    
+    startFileSend: function () {
+        var files = this.$('input[type="file"]')[0].files;
+
+        if (files && files.length !== 0) {
+
+            var context = this.get('context');
+            this.get('controller').send('sendMultiFile', files, context.id, function (id) {
+                $('[name="' + id + '"] div.fileUp').slideUp(300);
+                
+            });
+
+        } else {
+
+            alert('Select a file.');
+
+        }
     },
 
     startVoiceChat: function () {
 
+    }
+});
+
+App.DownloadView = Ember.View.extend({
+    acceptDownload: function () {
+        var link = this.$('a[name="download"]');
+
+        var evt = document.createEvent('MouseEvents');
+        evt.initMouseEvent('click', true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+
+        link[0].dispatchEvent(evt);
+        this.$().slideUp(300);
+    },
+    denyDownload: function () {
+        this.$('a[name="download"]').attr({
+            href: '',
+            download: ''
+        });
+        this.$('span[name="label"]').text('');
+        this.$().slideUp(300);
     }
 });
 
@@ -350,7 +481,7 @@ Ember.Handlebars.registerBoundHelper('timeForm', function (data, options) {
 });
 
 //Socket-io-client configuation
-Socket = io.connect('https://69.248.167.141:8001', { secure: true });
+Socket = io.connect('https://127.0.0.1:8001', { secure: true });
 
 Socket.on('connect', function () {
     App.CurrentClient.set('connected', true);
@@ -407,6 +538,22 @@ Socket.on('updateChat', function (data) {
         }
     } else {
         //TODO:: implement server data null error.
+    }
+});
+
+Socket.on('recFile', function (data) {
+    if (data && data.data && data.name && data.destinationUser && data.from) {
+        var ele = $('[name="' + data.from + '"] div.fileDown');
+        var key = App.CurrentClient.get('currentRoom').get('key');
+        var encrypted = JsonFormatter.parse(data.data);
+        var decrypted = CryptoJS.AES.decrypt(encrypted, key, { iv: encrypted.iv });
+        var plain = decrypted.toString(CryptoJS.enc.Utf8);
+        ele.children('a[name="download"]').attr({
+            href: plain,
+            download: data.name
+        });
+        ele.children('span[name="label"]').text(data.name);
+        ele.slideDown(300);
     }
 });
 

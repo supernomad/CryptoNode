@@ -168,6 +168,13 @@ div.right {
                         vertical-align:central
                     }
 
+                        .side > ul > li > ul > li div.fileUp{
+                            display:none;
+                        }
+                        .side > ul > li > ul > li div.fileDown{
+                            display:none;
+                        }
+
                     .side > ul > li > ul > li div img{
                         float:right;
                         margin:0 2px;

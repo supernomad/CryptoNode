@@ -154,7 +154,7 @@
             <strong>Users:</strong>
             <ul id="userList">
                 {{#each 'user' in 'currentRoom.users'}}
-                    {{#view 'App.UserListView' contextBinding='user'}}
+                    {{#view 'App.UserListView' contextBinding='user' userIdBinding='user.id'}}
                         <div>   
                             <strong>{{name}}</strong>
                             {{#if status}}
@@ -162,9 +162,19 @@
                             {{else}}
                                 <img class="status" src="/Images/Icons/orange.png" height="16" width="16" alt="Send File" title="{{unbound name}} is away" style="float:left"/>
                             {{/if}}
-                            <img src="/Images/Icons/attach.png" height="20" width="20" alt="Send File" title="Send a file to {{unbound name}}" {{action sendFile target='view'}} />
+                            <img src="/Images/Icons/attach.png" height="20" width="20" alt="Send File" title="Send a file to {{unbound name}}" {{action toggleFileUp target='view'}} />
                             <img src="/Images/Icons/mic.png" height="20" width="20" alt="Voice Chat" title="Start voice chat with {{unbound name}}" />
                         </div>
+                        <div class="fileUp">
+                            <input type="file" />
+                            <button {{action startFileSend target='view'}}>Send File</button>
+                        </div>
+                        {{#view 'App.DownloadView' class='fileDown' viewName='downloadView'}}
+                            <a name="download" href="" download="" style="visibility:hidden"></a>
+                            <span name="label"></span>
+                            <button name="accept" {{action 'acceptDownload' target='view'}}>Accept</button>
+                            <button name="deny" {{action 'denyDownload' target='view'}}>Deny</button>
+                        {{/view}}
                     {{/view}}
                 {{/each}}
             </ul>
