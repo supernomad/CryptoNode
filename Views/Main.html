@@ -1,27 +1,27 @@
 ﻿<!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>CryptoNode - Messenger</title>
+        <title>Crypto-Node</title>
 
         <!-- Meta -->
         <meta charset="utf-8" />
         <meta name="description" content="An SSL and AES-256 encrypted chat/file/voice/video messenger." />
         <meta name="author" content="Supernomad - Christian Saide" />
         <meta name="application-name" content="CryptoNode" />
-        <meta name="keywords" content="Encrypted,Chat,Node.js,AES,AES-256,Messenger,SSL,Video Chat,Voice Chat" />
+        <meta name="keywords" content="Encrypted,Chat,Node.js,AES,AES-256,Messenger,SSL,Video Chat,Voice Chat,File sharing, File encryption, Encryption" />
 
-        <!-- Script Library Includes -->
-        <!-- Ember libs -->
+        <!-- jQuery libs -->
         <script type="text/javascript" src="/Scripts/Libs/jquery-2.0.1.js"></script>
+        <!-- Ember libs -->
         <script type="text/javascript" src="/Scripts/Libs/handlebars-1.0.0-rc.4.js"></script>
         <script type="text/javascript" src="/Scripts/Libs/ember-1.0.0-rc.4.js"></script>
         <script type="text/javascript" src="/Scripts/Libs/ember-validations.js"></script>
         <!-- CryptoJS libs -->
         <script type="text/javascript" src="/Scripts/Libs/aes.js"></script>
         <script type="text/javascript" src="/Scripts/Libs/pbkdf2.js"></script>
-        <!-- Socket-io lib -->
+        <!-- Socket-io libs -->
         <script type="text/javascript" src="/Scripts/Libs/socket.io.js"></script>
-        <!-- moment lib -->
+        <!-- Misc libs -->
         <script type="text/javascript" src="/Scripts/Libs/moment.js"></script>
 
         <!-- Style/Icon Includes -->
@@ -31,168 +31,194 @@
     <body>
         <!-- Custom Scripts -->
         <script type="text/javascript" src="/Scripts/Client.js"></script>
-        <!-- Ember Application -->
-
-        <!-- Main application template -->
+        
+        <!-- Application -->
         <script type="text/x-handlebars">
             {{outlet}}
         </script>
 
-        <!-- Index template -->
+        <!-- Index -->
         <script type="text/x-handlebars" id="index">
-            <div class="cont">
-            	<div class="start">
-                    <img src="/Images/logo.png" height="50" width="300" title="CryptoNode" alt="Cryptonode"/>
-                    <div class="left">
-                        <h3>A SSL and AES-256 secured messenger application.</h3>
-                        <div>
-                            <p>This application utilizes SSL/TLS to encrypt web socket communication to and from the server. It then uses AES-256 ciphers to encrypt each individual message, file and/or voice stream before it is sent over the SSL connection. The AES-256 cipher seceret key is never known to the server or ever leaves the client memory.</p>
-                            <p>This will not protect against keyloggers or malicious people you may be talking to with this application. Nothing is completely secure, however this is a tool that is here for anyone to use. The idea is to promote internet freedom and to keep the last bits of our web privacy.</p>
-                            <p>The application is planned to be deployed into a TOR hidden service to increase annonymity between users. This will be done on the first public release of the application.</p>
-                        </div>
+            <div class="glow">
+                <div class="back">
+                    <div class="back2">
+                        {{view 'App.UserInfo'}}
                     </div>
-                    <div class="right">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>
-                                        <h3>Create or Join a new Node.</h3>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tr>
-                                <td>
-                                    <label for="">Username:</label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    {{view 'App.UserInfoTextField' valueBinding='username' autofocus='autofocus'}}
-                                </td>
-                            </tr>
-                            {{#if errors.username}}
-                                <tr>
-                                    <td class="isValid">
-                                        {{errors.username}}
-                                    </td>
-                                </tr>
-                            {{/if}}
-                            <tr>
-                                <td>
-                                    <label for="">Node:</label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    {{view 'App.UserInfoTextField' valueBinding='roomname'}}
-                                </td>
-                            </tr>
-                            {{#if errors.roomname}}
-                                <tr>
-                                    <td class="isValid">
-                                        {{errors.roomname}}
-                                    </td>
-                                </tr>
-                            {{/if}}
-                            <tr>
-                                <td>
-                                    <label for="">Password:</label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    {{view 'App.UserInfoTextField' type='password' valueBinding='roompassword'}}
-                                </td>
-                            </tr>
-                            {{#if errors.roompassword}}
-                                <tr>
-                                    <td class="isValid">
-                                        {{errors.roompassword}}
-                                    </td>
-                                </tr>
-                            {{/if}}
-                            <tr>
-                                <td>
-                                    <button {{action 'startNew'}}>Start</button>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-            	</div>
-            </div>
-        </script>
-
-        <!-- Main chat template -->
-        <script type="text/x-handlebars" id="chat">
-            <img class="logo" src="/Images/logo.png" height="50" width="300"/>
-            <div class="side">
-                <ul>
-                    <li>
-                        {{partial "userlist"}}
-                    </li>
-                </ul>
-                <div>
-                    <img src="/Images/Icons/disconnect.png" height="36" width="36" alt="disconnect" title="Disconnect" {{action 'disconnect'}}/>
-                    {{#if status}}
-                        <img src="/Images/Icons/here.png" height="36" width="36" alt="status" title="Toggle Status" {{action 'changeStatus' target='controller'}}/>
-                    {{else}}
-                        <img src="/Images/Icons/away.png" height="36" width="36" alt="status" title="Toggle Status" {{action 'changeStatus' target='controller'}}/>
-                    {{/if}}
                 </div>
             </div>
+        </script>
+
+        <!-- Chat -->
+        <script type="text/x-handlebars" id="chat">
+            <div class="chatCont">
+                <div id="side">
+                    {{view 'App.UserList'}}
+                {{view 'App.ApplicationControls'}}
+                </div>
+                <div id="main">
+                    {{view 'App.ChatList'}}
+                {{view 'App.NewMessage'}}
+                </div>
+            </div class="chatCont">
+        </script>
+
+        <!-- chatList -->
+        <script type="text/x-handlebars" data-template-name="chatList">
+            {{#each blob in room.messageBlobs}}
+                {{view 'App.ChatListItem'}}
+            {{else}}
+                <li>
+                    <strong>SERVER</strong>
+                    <div class="msg-cont">
+                        <p>No one is connected</p>
+                    </div>
+                    <hr />
+                    <em>a few seconds ago.</em>
+                </li>
+            {{/each}}
+        </script>
+
+        <!-- chatListItem -->
+        <script type="text/x-handlebars" data-template-name="chatListItem">
+            <strong>{{blob.from}}</strong>
+            <div class="msg-cont">
+                {{#each message in blob.messages}}
+                    {{#view 'App.ChatMessage'}}
+                        <p>{{message.data}}</p>
+                    {{/view}}
+                {{/each}}
+            </div>
+            <hr />
+            <em>{{timeRelative blob.postedAt}}</em>
+        </script>
+
+        <!-- userList -->
+        <script type="text/x-handlebars" data-template-name="userList">
+            {{#each user in room.users}}
+                {{view 'App.UserListItem'}}
+            {{else}}
+            <li>
+                <div class="main">
+                    <img class="status" src="/Images/Icons/orange.png" height="20" width="20" alt="Send File" title="Server is away" />
+                    <img src="/Images/Icons/attach.png" height="30" width="30" alt="Send File" title="Send a file to Server" {{action toggleUpload target='view'}}/>
+                    <img src="/Images/Icons/mic.png" height="30" width="30" alt="Voice Chat" title="Start voice chat with Server" />
+                    <strong>SERVER</strong>
+                </div>
+                {{view 'App.Download'}}
+                {{view 'App.Upload'}}
+                <hr />
+            </li>
+            {{/each}}
+        </script>
+
+        <!-- userListItem -->
+        <script type="text/x-handlebars" data-template-name="userListItem">
             <div class="main">
-                {{partial "chatlist"}}
+                {{#if user.status}}
+                    <img class="status" src="/Images/Icons/green.png" height="20" width="20" alt="Send File" title="{{unbound user.name}} is available" />
+                {{else}}
+                    <img class="status" src="/Images/Icons/orange.png" height="20" width="20" alt="Send File" title="{{unbound user.name}} is away" />
+                {{/if}}
+                <strong>{{user.name}}</strong>
+                <img src="/Images/Icons/attach.png" height="30" width="30" alt="Send File" title="Send a file to {{unbound user.name}}" {{action toggleUpload target='view'}}/>
+                <img src="/Images/Icons/mic.png" height="30" width="30" alt="Voice Chat" title="Start voice chat with {{unbound user.name}}" />
+                <img src="/Images/Icons/video.png" height="30" width="30" alt="Video Chat" title="Start video chat with {{unbound user.name}}" />
             </div>
-            <div class="input" >
-                {{view 'App.MessageTextField' valueBinding='newMessage' id='newMsg' autofocus="autofocus"}}
-                <div><img src="/Images/Icons/send.png" height="36" width="36" {{action 'sendChat' }}"/></div>
-            </div>
+            {{view 'App.Download'}}
+            {{view 'App.Upload'}}
+            {{view 'App.PrivateMessage'}}
+            <hr />
         </script>
 
-        <!-- User list chat parital -->
-        <script type="text/x-handlebars" id="_userlist">
-            <strong>Users:</strong>
-            <ul id="userList">
-                {{#each 'user' in 'currentRoom.users'}}
-                    {{#view 'App.UserListView' contextBinding='user' userIdBinding='user.id'}}
-                        <div>   
-                            <strong>{{name}}</strong>
-                            {{#if status}}
-                                <img class="status" src="/Images/Icons/green.png" height="16" width="16" alt="Send File" title="{{unbound name}} is available" style="float:left"/>
-                            {{else}}
-                                <img class="status" src="/Images/Icons/orange.png" height="16" width="16" alt="Send File" title="{{unbound name}} is away" style="float:left"/>
-                            {{/if}}
-                            <img src="/Images/Icons/attach.png" height="20" width="20" alt="Send File" title="Send a file to {{unbound name}}" {{action toggleFileUp target='view'}} />
-                            <img src="/Images/Icons/mic.png" height="20" width="20" alt="Voice Chat" title="Start voice chat with {{unbound name}}" />
-                        </div>
-                        <div class="fileUp">
-                            <input type="file" />
-                            <button {{action startFileSend target='view'}}>Send File</button>
-                        </div>
-                        {{#view 'App.DownloadView' class='fileDown' viewName='downloadView'}}
-                            <a name="download" href="" download="" style="visibility:hidden"></a>
-                            <span name="label"></span>
-                            <button name="accept" {{action 'acceptDownload' target='view'}}>Accept</button>
-                            <button name="deny" {{action 'denyDownload' target='view'}}>Deny</button>
-                        {{/view}}
-                    {{/view}}
-                {{/each}}
-            </ul>
+        <!-- userInfo -->
+        <script type="text/x-handlebars" data-template-name="userInfo">
+            <tbody>
+                <tr>
+                    <td colspan="2">
+                        <img class="help" src="/Images/Icons/help.png" height="30" width="30" title="About Crypto-Node" {{action showAbout target='view'}}/>
+                        <img src="/Images/logo.png" height="50" width="300" alt="crypto node" title="Crypto-Node Messenger"/>
+                        <p>Please enter your details to begin.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span>Username:</span>
+                        {{view Ember.TextField valueBinding='userName' autofocus='autofocus'}}
+                    </td>
+                    {{#if errors.userName}}
+                        <td class="isValid">
+                            {{errors.userName}}
+                        </td>
+                    {{/if}}
+                </tr>
+                <tr>
+                    <td>
+                        <span>Chat Node:</span>
+                        {{view Ember.TextField valueBinding='roomName'}}
+                    </td>
+                    {{#if errors.roomName}}
+                        <td class="isValid">
+                            {{errors.roomName}}
+                        </td>
+                    {{/if}}
+                </tr>
+                <tr>
+                    <td>
+                        <span>Password:</span>
+                        {{view Ember.TextField type='password' valueBinding='roomPassword'}}
+                    </td>
+                    {{#if errors.roomPassword}}
+                        <td class="isValid">
+                            {{errors.roomPassword}}
+                        </td>
+                    {{/if}}
+                </tr>
+                <tr>
+                    <td><button {{action connect taget='controller'}}>Connect</button></td>
+                </tr>
+            </tbody>
         </script>
 
-        <!-- Message list chat partial -->
-        <script type="text/x-handlebars" id="_chatlist">
-            <ul id="chatList" >
-                {{#each message in currentRoom.messages}}
-                    {{#view 'App.ChatListView'}}
-                        {{#unless message.fromServer}}
-                            <strong>{{message.name}}:</strong>
-                        {{/unless}}
-                        <p>{{message.message}}</p>
-                        <em>{{timeForm message.postedAt timeBinding='currentTime'}}</em>                    
-                    {{/view}}
-                {{/each}}
-            </ul>
+        <!-- newMessage -->
+        <script type="text/x-handlebars" data-template-name="newMessage">
+            <img class="left" src="/Images/Icons/input.png" height="36" width="38" />
+            {{view 'Ember.TextField' autofocus='autofocus'}}
+            <img class="right" src="/Images/Icons/send.png" height="36" width="38" {{action sendNewMessage target='view'}}/>
+        </script>
+
+        <!-- download -->
+        <script type="text/x-handlebars" data-template-name="download">
+            <a {{bindAttr id='user.id'}} name="download" href="" download="" style="visibility:hidden"></a>
+            <span name="label"></span>
+            <button name="accept" {{action 'acceptDownload' target='view'}}>Accept</button>
+            <button name="deny" {{action 'denyDownload' target='view'}}>Deny</button>
+        </script>
+
+        <!-- upload -->
+        <script type="text/x-handlebars" data-template-name="upload">
+            <input type="file" />
+            <button {{bindAttr id='user.id'}} {{action startFileSend target='view'}}>Send File</button>
+            <progress></progress>
+        </script>
+
+        <!-- private -->
+        <script type="text/x-handlebars" data-template-name="private">
+
+        </script>
+
+        <!-- controls -->
+        <script type="text/x-handlebars" data-template-name="controls">
+            {{#if status}}
+                <img src="/Images/Icons/here.png" alt="Status - Available" title="Status - Available" height="36" width="36" {{action toggleStatus target='view'}}/>
+            {{else}}
+                <img src="/Images/Icons/away.png" alt="Status - Away" title="Status - Away" height="36" width="36" {{action toggleStatus target='view'}}/>
+            {{/if}}
+            <img src="/Images/Icons/disconnect.png" alt="Disconnect" title="Disconnect" height="36" width="36" {{action disconnect target='view'}} />
+            {{#if playSound}}
+                <img src="/Images/Icons/sound.png" alt="Toggle Sound" title="Mute Sound" height="36" width="36" {{action toggleSound target='view'}} />
+            {{else}}
+                <img src="/Images/Icons/mute.png" alt="Toggle Sound" title="Play Sound" height="36" width="36" {{action toggleSound target='view'}} />
+            {{/if}}
         </script>
     </body>
 </html>

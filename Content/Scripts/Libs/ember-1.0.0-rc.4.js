@@ -16218,10 +16218,12 @@ Ember.View = Ember.CoreView.extend(
     @type DOMElement
   */
   element: Ember.computed(function(key, value) {
-    if (value !== undefined) {
-      return this.currentState.setElement(this, value);
-    } else {
-      return this.currentState.getElement(this);
+      if (value !== undefined) {
+        if(this.currentState)
+            return this.currentState.setElement(this, value);
+      } else {
+        if (this.currentState)
+            return this.currentState.getElement(this);
     }
   }).property('_parentView'),
 

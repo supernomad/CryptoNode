@@ -1,285 +1,341 @@
 ﻿body {
     position: absolute;
     top: 0;
-    right: 0;
-    left: 0;
     bottom: 0;
-    min-width: 800px;
-    min-height: 600px;
-    border: none;
-    background: rgb(24,24,24);
-    padding: 0;
+    left: 0;
+    right: 0;
     margin: 0;
+    padding: 0;
+    z-index: 0;
+    font-family: 'OCR A Std';
+    font-size: 14px;
+    background: #878787;
+    min-height: 600px;
+    min-width: 800px;
 }
 
-em {
-    font-size: .75em;
-}
-
-img {
-    cursor: hand;
-    cursor: pointer;
-}
-
-p {
-    margin-top: .5em;
-    margin-bottom: .5em;
-}
-
-h3 {
-    margin-top: 1em;
-    margin-bottom: 1em;
+button {
+    background-color: rgba(0,0,0,.5);
+    border: 1px solid #00cc00;
+    color: #00cc00;
+    padding: 4px 10px;
 }
 
 ul {
     list-style: none;
-    margin: 0;
     padding: 0;
     border: none;
-}
-
-.cont {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.7);
-}
-
-.start {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height:550px;
-    width: 700px;
-    margin: auto;
-    padding: 0;
-    background: rgb(107, 107, 107);
-    -webkit-box-shadow: 4px 4px 9px rgba(50, 50, 50, 0.75);
-    -moz-box-shadow: 4px 4px 9px rgba(50, 50, 50, 0.75);
-    box-shadow: 4px 4px 9px rgba(50, 50, 50, 0.75);
-}
-
-.start img{
-    
-    position:absolute;
-    top:10px;
-    left:200px;
-    right:200px;
-    height:50px;
-}
-    .start input {
-        width: 200px;
-    }
-
-    .start button {
-        width: 205px;
-    }
-
-    .start > div {
-        position: absolute;
-        top: 60px;
-        bottom: 0;
-        width: 44%;
-        margin: 0;
-        padding: 3%;
-    }
-
-div.left {
-    left: 0;
-}
-
-    div.left div{
-        margin-bottom:1em;
-    }
-
-div.right {
-    right: 0;
-}
-
-    div.right table {
-        position:absolute;
-        top:0;
-        left:0;
-        right:0;
-        bottom:0;
-        height: 270px;
-        width: 270px;
-        text-align:center;
-        margin: auto;
-        padding: 15px;
-    }
-
-.logo {
-    position: absolute;
-    top: 5px;
-    left: 0;
     margin: 0;
-    padding: 0;
-    height: 50px;
-    width: 300px;
 }
 
-.side {
+.glow {
     position: absolute;
-    top: 55px;
+    top: 0;
     left: 0;
+    right: 0;
     bottom: 0;
-    width: 300px;
+    margin: auto;
+    height: 300px;
+    width: 730px;
+    border-radius: 70px;
+    -webkit-box-shadow: 0px 0px 60px rgba(0, 204, 0, .75);
+    -moz-box-shadow: 0px 0px 60px rgba(0, 204, 0, .75);
+    box-shadow: 0px 0px 60px rgba(0, 204, 0, .75);
 }
 
-    .side > ul {
+.back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    height: 300px;
+    width: 650px;
+}
+
+    .back:after {
         position: absolute;
         top: 0;
-        left: 0;
-        right: 0;
-        bottom: 54px;
-        padding: 0 10px 10px 10px;
-        padding-top: 0;
-        overflow: auto;
+        left: -40px;
+        content: '';
+        overflow: hidden;
+        height: 0;
+        width: 0;
+        border-left: 40px solid transparent;
+        border-bottom: 40px solid #525252;
     }
 
-        .side > ul > li {
-            background: white;
-            padding: 10px;
-        }
-
-            .side > ul > li > ul {
-                margin: 10px 0 0 0;
-            }
-
-                .side > ul > li > ul > li {
-                    background: white;
-                    border: 1px solid black;
-                    padding: 5px;
-                    margin: 5px 0 10px 0;
-                    -webkit-box-shadow: 4px 4px 10px rgba(50, 50, 50, 0.75);
-                    -moz-box-shadow: 4px 4px 10px rgba(50, 50, 50, 0.75);
-                    box-shadow: 4px 4px 10px rgba(50, 50, 50, 0.75);
-                }
-
-                    .side > ul > li > ul > li div {
-                        display: block;
-                        margin: 0;
-                        padding: 0;
-                        vertical-align:central
-                    }
-
-                        .side > ul > li > ul > li div.fileUp{
-                            display:none;
-                        }
-                        .side > ul > li > ul > li div.fileDown{
-                            display:none;
-                        }
-
-                    .side > ul > li > ul > li div img{
-                        float:right;
-                        margin:0 2px;
-                    }
-                        .side > ul > li > ul > li div img.status {
-                            margin:2px 5px;
-                        }
-
-
-    .side > div {
+    .back:before {
         position: absolute;
-        bottom: 5px;
-        right: 0;
-        left: 11px;
-        height: 42px;
+        bottom: 0;
+        left: -40px;
+        content: '';
+        overflow: hidden;
+        height: 0;
+        width: 0;
+        border-right: 40px solid #525252;
+        border-bottom: 40px solid transparent;
     }
 
-        .side > div  img {
-            float: left;
-            padding: 0;
-            border: none;
-            margin: 3px 2px;
-        }
-
-.main {
+.back2 {
     position: absolute;
-    top: 55px;
-    right: 0;
-    bottom: 44px;
-    left: 300px;
-}
-
-    .main ul {
-        position: absolute;
-        top: 0px;
-        bottom: 10px;
-        left: 10px;
-        right: 10px;
-        overflow: auto;
-        padding: 10px;
-        background: white;
-        border: 1px solid black;
-    }
-
-        .main ul li {
-            padding: 5px;
-            margin: 10px 0;
-            background: white;
-            border: 1px solid black;
-            -webkit-box-shadow: 4px 4px 10px rgba(50, 50, 50, 0.75);
-            -moz-box-shadow: 4px 4px 10px rgba(50, 50, 50, 0.75);
-            box-shadow: 4px 4px 10px rgba(50, 50, 50, 0.75);
-        }
-
-            .main ul li:first-child {
-                margin-top: 0;
-            }
-
-            .main ul li p {
-                margin-left: 20px;
-                margin-top: .25em;
-                margin-bottom: .25em;
-            }
-
-.input {
-    position: absolute;
+    top: 0;
+    left: 0;
     right: 0;
     bottom: 0;
-    left: 300px;
-    height: 42px;
+    margin: auto;
+    height: 300px;
+    width: 650px;
 }
 
-    .input input {
+    .back2:after {
         position: absolute;
-        top: -5px;
-        left: 11px;
-        right: 53px;
+        top: 0;
+        right: -40px;
+        content: '';
+        overflow: hidden;
+        height: 0;
+        width: 0;
+        border-right: 40px solid transparent;
+        border-bottom: 40px solid #525252;
+    }
+
+    .back2:before {
+        position: absolute;
         bottom: 0;
-        height: 40px;
+        right: -40px;
+        content: '';
+        overflow: hidden;
+        height: 0;
+        width: 0;
+        border-left: 40px solid #525252;
+        border-bottom: 40px solid transparent;
+    }
+
+.cut-off {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    color: #00cc00;
+    text-align: center;
+    vertical-align: auto;
+    height: 300px;
+    width: 650px;
+    background: #525252;
+}
+
+    .cut-off:after {
+        position: absolute;
+        top: 40px;
+        left: -40px;
+        bottom: 40px;
+        content: '';
+        overflow: hidden;
+        width: 40px;
+        background-color: #525252;
+    }
+
+    .cut-off:before {
+        position: absolute;
+        top: 40px;
+        right: -40px;
+        bottom: 40px;
+        content: '';
+        overflow: hidden;
+        width: 40px;
+        background-color: #525252;
+    }
+
+    .cut-off img.help {
+        position: absolute;
+        top: 20px;
+        left: 0;
+        cursor: pointer;
+        float: left;
+    }
+
+    .cut-off span {
+        display: block;
+    }
+
+.isValid {
+    color: red;
+    text-align: left;
+}
+
+.chatCont {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    bottom: 25px;
+    margin: 0;
+    padding: 0;
+}
+
+#main {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 75%;
+    border: none;
+    margin: 0;
+    background-color: #525252;
+}
+
+.chatList {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    left: 20px;
+    bottom: 90px;
+    margin: 0;
+    border: 2px solid #00cc00;
+    overflow: auto;
+}
+
+    .chatList li {
+        padding: 1.25em;
+    }
+
+    .chatList strong {
+        color: #00cc00;
+        text-transform: capitalize;
+    }
+
+    .chatList em {
+        color: lightgray;
+        font-size: .75em;
+    }
+
+    .chatList p {
+        color: white;
+        margin: .25em .5em .25em 1.5em;
+    }
+
+.newMessage {
+    position: absolute;
+    bottom: 40px;
+    height: 40px;
+    left: 20px;
+    right: 40px;
+}
+
+    .newMessage img {
+        position: absolute;
+        top: 0;
+        border: 2px solid #00cc00;
+    }
+
+        .newMessage img.right {
+            border-left: none;
+            right: 0;
+            cursor: pointer;
+        }
+
+        .newMessage img.left {
+            border-right: none;
+            left: 0;
+        }
+
+    .newMessage input {
+        position: absolute;
+        top: 0;
+        left: 40px;
+        bottom: 0;
+        right: 40px;
         margin: 0;
-        background: white;
-        color: black;
-        border: none;
+        font-size: 15px;
+        font-family: 'OCR A Std';
+        color: lightgray;
         padding-left: 10px;
+        background-color: transparent;
+        border: 2px solid #00cc00;
+        border-left: none;
+        border-right: none;
     }
 
-    .input div {
-        position: absolute;
-        background: white;
-        top: -5px;
-        bottom: 0;
-        right: 11px;
-        width: 42px;
-        height: 42px;
-    }
+        .newMessage input:focus {
+            outline: none;
+        }
 
-    .input img {
+#side {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 25%;
+    border: none;
+    margin: 0;
+    background-color: #525252;
+}
+
+.userList {
+    position: absolute;
+    top: 40px;
+    bottom: 90px;
+    right: 20px;
+    left: 40px;
+    padding: 1.25em;
+    border: 2px solid #00cc00;
+}
+
+    .userList div.main {
+        display: block;
+        margin: 5px 0 0 0;
+        vertical-align: middle;
         padding: 0;
-        border: none;
-        margin: 3px;
+        height: 30px;
+        color: #00cc00;
     }
 
-    .isValid{
-        color:red;
-        border:2px solid red;
-        padding:5px;
-        background-color:white;
+        .userList div.main strong {
+            float: left;
+            padding: 0;
+            margin: 10px 0 0 0;
+            font-size: 15px;
+            vertical-align: bottom;
+            text-transform: capitalize;
+        }
+
+        .userList div.main img {
+            float: right;
+            margin: 0 5px 0 0;
+            cursor: pointer;
+        }
+
+            .userList div.main img.status {
+                float: left;
+                margin: 5px;
+            }
+
+    .userList div.fileDown {
+        display: none;
+    }
+
+    .userList div.fileUp {
+        display: none;
+        margin: 5px;
+    }
+
+.fileUp progress {
+    width: 100%;
+    margin: 10px 0;
+}
+
+.appControls {
+    position: absolute;
+    bottom: 40px;
+    right: 20px;
+    left: 40px;
+    height: 36px;
+}
+
+    .appControls img {
+        cursor: pointer;
     }
