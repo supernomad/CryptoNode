@@ -1,5 +1,40 @@
 ﻿/// <reference path="./_VSdoc.js" /> 
 /// 
+Array.prototype.ObjectIndexOf = function (searchTerm, property) {
+    if (property) {
+        for (var i = 0, len = this.length; i < len; i++) {
+            if (this[i][property] === searchTerm) return i;
+        }
+        return -1;
+    }
+    else 
+        return this.indexOf(searchTerm);
+    return -1;
+};
+function b64toBlob(b64Data, contentType, sliceSize) {
+    contentType = contentType || '';
+    sliceSize = sliceSize || 1024;
+
+    function charCodeFromCharacter(c) {
+        return c.charCodeAt(0);
+    }
+
+    var byteCharacters = atob(b64Data),
+        byteArrays = [],
+        slice,
+        byteNumbers,
+        byteArray;
+
+    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        slice = byteCharacters.slice(offset, offset + sliceSize);
+        byteNumbers = Array.prototype.map.call(slice, charCodeFromCharacter);
+        byteArray = new Uint8Array(byteNumbers);
+
+        byteArrays.push(byteArray);
+    }
+
+    return new Blob(byteArrays, { type: contentType });
+}
 
 //Encryption Formatter.
 var JsonFormatter = {
@@ -183,21 +218,21 @@ App.Download = Em.View.extend({
     tagName: 'div',
     classNames: ['fileDown'],
     templateName: 'download',
+    downloadData: '',
+    downloadName: '',
     acceptDownload: function () {
-        var dl = this.$('a[name="download"]');
+        var downloadData = this.get('downloadData'),
+            downloadName = this.get('downloadName');
 
-        var evt = document.createEvent('MouseEvents');
-        evt.initMouseEvent('click', true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+        saveAs(b64toBlob(downloadData), downloadName);
 
-        dl[0].dispatchEvent(evt);
+        this.set('downloadData', '');
+        this.set('downloadName', '');
         this.$().slideUp(300);
     },
     denyDownload: function () {
-        this.$('a[name="download"]').attr({
-            href: '',
-            download: ''
-        });
-        this.$('span[name="label"]').text('');
+        this.set('downloadData', '');
+        this.set('downloadName', '');
         this.$().slideUp(300);
     }
 
@@ -207,37 +242,61 @@ App.Upload = Em.View.extend({
     tagName: 'div',
     classNames: ['fileUp'],
     templateName: 'upload',
-    startFileSend: function () {
-        var file = this.$('input[type="file"]')[0].files[0];
-        if (file.size < 11000000) {
-            var fr = new FileReader();
-            fr.toUser = this.$('button').first().attr('id');
-            fr.meter = this.$('progress').first();
-            fr.file = file;
+    sendChunkedFile: function () {
+        var file = this.$('input[type="file"]')[0].files[0],
+            fr = new FileReader,
+            chunkSize = 512000,
+            chunks = Math.ceil(file.size / chunkSize),
+            chunk = 0,
+            toUser = this.$('button').first().attr('id'),
+            upload = this.$(),
+            progress = this.$('progress'),
+            start = -1,
+            end = -1;
 
-            fr.onloadend = this.onloadendEvent;
-            fr.onprogress = this.onprogressEvent;
+        progress[0].max = chunks - 1;
 
-            fr.readAsDataURL(fr.file);
+        function loadNext() {
+            progress[0].value = chunk;
+
+            start = chunk * chunkSize;
+            end = start + chunkSize >= file.size ? file.size : start + chunkSize;
+
+            fr.onloadend = function (evt) {
+                var result = evt.target.result,
+                    resLength = result.length,
+                    key = App.CurrentUser.get('key'),
+                    plain = CryptoJS.lib.WordArray.create(result);
+
+                var encrypted = CryptoJS.AES.encrypt(plain, key, { iv: CryptoJS.lib.WordArray.random(128 / 8) });
+
+                var emitData = {
+                    fileName: file.name,
+                    chunkData: JsonFormatter.stringify(encrypted),
+                    destinationUser: toUser,
+                    from: App.CurrentUser.get('id'),
+                    chunkNumber: chunk,
+                    totalChunks: chunks - 1
+                };
+
+                Socket.emit('sendChunk', emitData);
+
+                if (++chunk < chunks) {
+                    loadNext();
+                } else {
+                    upload.slideUp(300);
+                    upload.children('input[type="file"]').replaceWith('<input type="file" />');
+
+                    progress[0].value = 0;
+                }
+            };
+
+            var slice = file.slice(start, end);
+            fr.readAsArrayBuffer(slice);
         }
-    },
-    onloadendEvent: function (evt) {
-        this.meter.parent('div').slideToggle(300);
 
-        var dataResultPlain = evt.target.result;
-        var key = App.CurrentUser.get('key');
-        var encrypted = CryptoJS.AES.encrypt(dataResultPlain, key, { iv: CryptoJS.lib.WordArray.random(128 / 8), format: JsonFormatter });
-        var emitData = { name: this.file.name, data: encrypted.toString(), destinationUser: this.toUser, from: App.CurrentUser.get('id') };
-
-        Socket.emit('sendFile', emitData);
-        this.meter.siblings('input[type="file"]').replaceWith(this.meter.siblings('input[type="file"]').first().clone(true));
+        loadNext();
     },
-    onprogressEvent: function (evt) {
-        if (evt.lengthComputable) {
-            this.meter[0].max = evt.total;
-            this.meter[0].value = evt.loaded;
-        }
-    }
 });
 
 App.PrivateMessage = Em.View.extend({
@@ -489,6 +548,50 @@ Socket.on('recFile', function (data) {
             href: plainText,
             download: data.name
         });
+    }
+});
+
+CHUNKS = {};
+TotalChunks = 0;
+RecChunks = 0;
+ChunkInterval = -1;
+
+Socket.on('recChunk', function (data) {
+    if (data) {
+        var encrypted = JsonFormatter.parse(data.chunkData),
+            key = App.CurrentUser.get('key'),
+            decrypted = CryptoJS.AES.decrypt(encrypted, key, { iv: encrypted.iv }),
+            plainText = decrypted.toString(CryptoJS.enc.Hex);
+
+        CHUNKS[data.chunkNumber] = plainText;
+        RecChunks++;
+        if (data.chunkNumber === 0) {
+            TotalChunks = data.totalChunks + 1;
+            ChunkInterval = setInterval(function () {
+                if (TotalChunks === RecChunks) {
+                    var HexString = '';
+                    for (var i = 0; i < TotalChunks; i++) {
+                        HexString += CHUNKS[i];
+                    }
+                    var base64String = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Hex.parse(HexString));
+
+
+                    var span = $('#' + data.from),
+                        down = span.parent('div.fileDown'),
+                        downView = Em.View.views[down.attr('id')];
+
+                    down.slideToggle(300);
+
+                    Em.set(downView, 'downloadData', base64String);
+                    Em.set(downView, 'downloadName', data.fileName);
+
+                    RecChunks = 0;
+                    CHUNKS = {};
+                    TotalChunks = 0;
+                    clearInterval(ChunkInterval);
+                }
+            }, 1000);
+        }
     }
 });
 

@@ -180,6 +180,14 @@ io.sockets.on('connection', function (socket) {
         }
     });
 
+    socket.on('sendChunk', function (data) {
+        if (data && typeof data.fileName === 'string' && typeof data.chunkData === 'string' && typeof data.destinationUser === 'string' && typeof data.from === 'string' && typeof data.chunkNumber === 'number' && typeof data.totalChunks === 'number') {
+            io.sockets.socket(data.destinationUser).emit('recChunk', data);
+        } else {
+            socket.emit('invalidData', 'sendChunk data was invalid.');
+        }
+    });
+
     socket.on('sendFile', function (data) {
         if (data && typeof data.name === 'string' && typeof data.data === 'string') {
             io.sockets.socket(data.destinationUser).emit('recFile', data);
@@ -201,9 +209,9 @@ io.sockets.on('connection', function (socket) {
             if (rooms[socket.room].users.length === 1) {
                 delete rooms[socket.room];
             } else {
-                if (rooms[i].users.Remove(socket.id, 'id')) {
-                    io.sockets.to(i).emit('removeUser', { id: socket.id });
-                    io.sockets.to(i).emit('updateChat', { name: "SERVER", message: socket.username + " has left the node.", postedAt: new Date() });
+                if (rooms[socket.room].users.Remove(socket.id, 'id')) {
+                    io.sockets.to(socket.room).emit('removeUser', { id: socket.id });
+                    io.sockets.to(socket.room).emit('updateChat', { name: "SERVER", message: socket.username + " has left the node.", postedAt: new Date() });
                 }
             }
         }

@@ -19,10 +19,12 @@
         <!-- CryptoJS libs -->
         <script type="text/javascript" src="/Scripts/Libs/aes.js"></script>
         <script type="text/javascript" src="/Scripts/Libs/pbkdf2.js"></script>
+        <script type="text/javascript" src="/Scripts/Libs/lib-typedarrays.js"></script>
         <!-- Socket-io libs -->
         <script type="text/javascript" src="/Scripts/Libs/socket.io.js"></script>
         <!-- Misc libs -->
         <script type="text/javascript" src="/Scripts/Libs/moment.js"></script>
+		<script type="text/javascript" src="/Scripts/Libs/FileSaver.js"></script>
 
         <!-- Style/Icon Includes -->
         <link rel="shortcut icon" href="/Images/favicon.ico" />
@@ -31,7 +33,7 @@
     <body>
         <!-- Custom Scripts -->
         <script type="text/javascript" src="/Scripts/Client.js"></script>
-        
+
         <!-- Application -->
         <script type="text/x-handlebars">
             {{outlet}}
@@ -104,7 +106,7 @@
                     <img src="/Images/Icons/mic.png" height="30" width="30" alt="Voice Chat" title="Start voice chat with Server" />
                     <strong>SERVER</strong>
                 </div>
-                {{view 'App.Download'}}
+                {{view 'App.Download' }}
                 {{view 'App.Upload'}}
                 <hr />
             </li>
@@ -188,8 +190,7 @@
 
         <!-- download -->
         <script type="text/x-handlebars" data-template-name="download">
-            <a {{bindAttr id='user.id'}} name="download" href="" download="" style="visibility:hidden"></a>
-            <span name="label"></span>
+            <span {{bindAttr id='user.id'}} name="label">{{view.downloadName}}</span>
             <button name="accept" {{action 'acceptDownload' target='view'}}>Accept</button>
             <button name="deny" {{action 'denyDownload' target='view'}}>Deny</button>
         </script>
@@ -197,7 +198,7 @@
         <!-- upload -->
         <script type="text/x-handlebars" data-template-name="upload">
             <input type="file" />
-            <button {{bindAttr id='user.id'}} {{action startFileSend target='view'}}>Send File</button>
+            <button {{bindAttr id='user.id'}} {{action sendChunkedFile target='view'}}>Send File</button>
             <progress></progress>
         </script>
 
