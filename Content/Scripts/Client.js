@@ -7,7 +7,7 @@ Array.prototype.ObjectIndexOf = function (searchTerm, property) {
         }
         return -1;
     }
-    else 
+    else
         return this.indexOf(searchTerm);
     return -1;
 };
@@ -222,13 +222,28 @@ App.Download = Em.View.extend({
     downloadName: '',
     acceptDownload: function () {
         var downloadData = this.get('downloadData'),
-            downloadName = this.get('downloadName');
+            downloadName = this.get('downloadName'),
+            progress = this.$('progress'),
+            key = App.CurrentUser.get('key'),
+            hexString = '';
 
-        saveAs(b64toBlob(downloadData), downloadName);
+        progress[0].max = downloads[downloadData].totalChunks
+
+        for (var i = 0; i < downloads[downloadData].totalChunks; i++) {
+            var encrypted = JsonFormatter.parse(downloads[downloadData].chunksObj[i]);
+            var decrypted = CryptoJS.AES.decrypt(encrypted, key, { iv: encrypted.iv });
+            hexString += decrypted.toString(CryptoJS.enc.Hex);
+            progress[0].value = i + 1;
+        }
+
+        var b64String = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Hex.parse(hexString));
+
+        saveAs(b64toBlob(b64String), downloadName);
 
         this.set('downloadData', '');
         this.set('downloadName', '');
         this.$().slideUp(300);
+        delete downloads[downloadData];
     },
     denyDownload: function () {
         this.set('downloadData', '');
@@ -380,7 +395,7 @@ App.IndexController = Em.ObjectController.extend({
                                             }
                                         });
                                     }
-                                } 
+                                }
                             });
                         } else {
                             salt = CryptoJS.lib.WordArray.random(1024 / 8),
@@ -410,7 +425,9 @@ App.IndexController = Em.ObjectController.extend({
                     }
                 });
             }
-        });}});
+        });
+    }
+});
 
 App.ChatRoute = Em.Route.extend({
     model: function () {
@@ -524,7 +541,7 @@ Socket.on('updateChat', function (data) {
 });
 
 Socket.on('updateUser', function (data) {
-    if(typeof data === 'object' && data !== null && typeof data.name === 'string' && typeof data.id === 'string' && typeof data.status === 'boolean'){
+    if (typeof data === 'object' && data !== null && typeof data.name === 'string' && typeof data.id === 'string' && typeof data.status === 'boolean') {
         var user = App.CurrentUser.get('room').get('users').findProperty('id', data.id);
         Em.set(user, 'status', data.status);
     } else {
@@ -532,66 +549,38 @@ Socket.on('updateUser', function (data) {
     }
 });
 
-Socket.on('recFile', function (data) {
-    if (data) {
-        var link = $('#' + data.from),
-            down = link.parent('div.fileDown'),
-            encrypted = JsonFormatter.parse(data.data),
-            key = App.CurrentUser.get('key'),
-            decrypted = CryptoJS.AES.decrypt(encrypted, key, { iv: encrypted.iv }),
-            plainText = decrypted.toString(CryptoJS.enc.Utf8);
+var downloads = {};
 
-        down.slideToggle(300);
-        down.children('span').first().text(data.name);
-        
-        link.attr({
-            href: plainText,
-            download: data.name
-        });
-    }
-});
-
-CHUNKS = {};
-TotalChunks = 0;
-RecChunks = 0;
-ChunkInterval = -1;
+function DownloadData() {
+    return {
+        chunksObj: {},
+        totalChunks: 0,
+        recChunks: 0,
+        chunkInterval: -1
+    };
+}
 
 Socket.on('recChunk', function (data) {
     if (data) {
-        var encrypted = JsonFormatter.parse(data.chunkData),
-            key = App.CurrentUser.get('key'),
-            decrypted = CryptoJS.AES.decrypt(encrypted, key, { iv: encrypted.iv }),
-            plainText = decrypted.toString(CryptoJS.enc.Hex);
-
-        CHUNKS[data.chunkNumber] = plainText;
-        RecChunks++;
-        if (data.chunkNumber === 0) {
-            TotalChunks = data.totalChunks + 1;
-            ChunkInterval = setInterval(function () {
-                if (TotalChunks === RecChunks) {
-                    var HexString = '';
-                    for (var i = 0; i < TotalChunks; i++) {
-                        HexString += CHUNKS[i];
-                    }
-                    var base64String = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Hex.parse(HexString));
-
-
+        if (!downloads[data.from]) {
+            downloads[data.from] = new DownloadData();
+            downloads[data.from].totalChunks = data.totalChunks + 1;
+            downloads[data.from].chunkInterval = setInterval(function () {
+                if (downloads[data.from].recChunks === downloads[data.from].totalChunks) {
                     var span = $('#' + data.from),
-                        down = span.parent('div.fileDown'),
-                        downView = Em.View.views[down.attr('id')];
+                    down = span.parent('div.fileDown'),
+                    downView = Em.View.views[down.attr('id')];
 
                     down.slideToggle(300);
 
-                    Em.set(downView, 'downloadData', base64String);
+                    Em.set(downView, 'downloadData', data.from);
                     Em.set(downView, 'downloadName', data.fileName);
-
-                    RecChunks = 0;
-                    CHUNKS = {};
-                    TotalChunks = 0;
-                    clearInterval(ChunkInterval);
+                    clearInterval(downloads[data.from].chunkInterval)
                 }
             }, 1000);
         }
+        downloads[data.from].chunksObj[data.chunkNumber] = data.chunkData;
+        downloads[data.from].recChunks++;
     }
 });
 

@@ -323,7 +323,7 @@ ul {
         margin: 5px;
     }
 
-.fileUp progress {
+progress {
     width: 100%;
     margin: 10px 0;
 }
