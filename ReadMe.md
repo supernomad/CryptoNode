@@ -18,6 +18,7 @@ to
 ### Client
 The client uses Ember.js to handle templates and properties, while using CryptoJS for encryption of individual messages. The key is generated using a shared salt and the PBKDF2 key generation scheme currently set at 1000 iterations. The password is pre shared  along with the node name for the chat.
 
+### Description
 This is in no way a finished product however it is the beginning of one please let me know of any glaring issues or features you would like added or removed. The idea of the project is to build a lightweight server/client platform that can be run and utilized on almost an hardware and software combination. To give people the opportunity to have their own encrypted chat networks for whatever it is they want to talk about. Privacy is a human right and extends to everyone in this world, and as such people should have access to a free way to ensure that right is upheald.
 
 ### TODO
