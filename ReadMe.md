@@ -9,11 +9,11 @@ Currently the ports are setup to 8000 for the http port and 8001 for the https p
 
     insecure = require('http').createServer(http).listen(8000),
     secure = require('https').createServer(creds, https).listen(8001),
-to -
+
+to 
 
     insecure = require('http').createServer(http).listen(YourHttpPort),
     secure = require('https').createServer(creds, https).listen(YourSecureHttpsPort),
-
 
 ### Client
 The client uses Ember.js to handle templates and properties, while using CryptoJS for encryption of individual messages. The key is generated using a shared salt and the PBKDF2 key generation scheme currently set at 1000 iterations. The password is pre shared  along with the node name for the chat.
