@@ -1,6 +1,6 @@
 ﻿## CrytpoNode - Encrypted Messenger
 
-This project contains the start of an ecnrypted chat program written in Node.js and Ember.js. The application is designed using SSL to encrypt the socket communications as well as AES-256 to encrypt the data being sent over the wire. The key used for the AES encryption is never sent over the wire and the server has no knowledge or record of the information being transmitted.
+This project contains the start of an encrypted chat program written in Node.js and Ember.js. The application is designed using SSL to encrypt the socket communications as well as AES-256 to encrypt the data being sent over the wire. The key used for the AES encryption is never sent over the wire and the server has no knowledge or record of the information being transmitted.
 
 ### Server
 The server is written in Node.js utilizing the socket-io library for realtime updates of information. The server tracks the users currently connected to the individual nodes as well as the salt used for key generation for each node.
