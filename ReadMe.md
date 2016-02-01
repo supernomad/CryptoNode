@@ -12,7 +12,7 @@ Run the following commands:
 git clone https://github.com/Supernomad/CryptoNode.git
 cd CryptoNode/
 npm install
-node server.js
+node app.js
 ```
 
 Then point your web browser at `localhost:8080`, and follow the on screen instructions.
