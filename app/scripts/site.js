@@ -52,7 +52,7 @@ app.join = function(username, room, password) {
         app.add_line("system", "leave currently joined room first.");
         return;
     }
-    
+
     app.pass = password;
     app.key = CryptoJS.PBKDF2(password, app.salt, { keySize: 256 / 32, iterations: 1000 })
     app.user = username;
@@ -197,7 +197,8 @@ app.clear = function() {
 
 app.help = function() {
     app.add_line("system", "commands:")
-    app.add_line("system", "/join [username] [room] [password] # joins the specifed room with the username and password provided.")
+    app.add_line("system", "/join [username] [room] [password] # joins the specifed room with the username and password provided. There must be no spaces in any of the parameters and they must be unquoted.")
+    app.add_line("system", "i.e. /join supernomad woot sup3rs3cr3tp@55w0rd")
     app.add_line("system", "/leave # leaves the current room")
     app.add_line("system", "/rooms # lists available rooms")
     app.add_line("system", "/users # lists users in the currently joined room")

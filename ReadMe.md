@@ -26,7 +26,9 @@ Currently the port is defaulted to `8080` however can be overridden with the `PO
 The client uses jQuery to handle templates and properties, while using CryptoJS for encryption of individual messages. The client comes built in with a few commands that can be run to utilize the system, enumerated bellow:
 
 ```
-/join [username] [room] [password] # joins the specifed room with the username and password provided.
+/join [username] [room] [password] # joins the specifed room with the username and password provided. There must be no spaces in any of the parameters and they must be unquoted.
+i.e. /join supernomad woot sup3rs3cr3tp@55w0rd
+
 /leave # leaves the current room.
 /rooms # lists available rooms.
 /users # lists users in the currently joined room.
