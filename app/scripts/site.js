@@ -181,7 +181,7 @@ app.on_input = function() {
 }
 
 app.add_line = function(user, line) {
-    $("#stdout").append('<li>' + user + ' | ' + line.replace(/<(?:.|\n)*?>/gm, '') + '</li>');
+    $("#stdout").append('<li><span class="name">' + user + '&nbsp;|&nbsp;</span><span>' + line.replace(/<(?:.|\n)*?>/gm, '') + '</span></li>');
     $("#stdout")[0].scrollTop = $("#stdout")[0].scrollHeight;
 }
 

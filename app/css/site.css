@@ -37,10 +37,21 @@ div {
 }
 
 #window ul li {
-    height: 30px;
+    min-height: 19px;
     width: 100%;
     margin: 0;
     padding: 1px;
+}
+
+#window ul span {
+    height: 100%;
+    margin: 0;
+    padding: 1px;
+    vertical-align: middle;
+}
+
+#window ul span.name {
+    color: green;
 }
 
 #input {
