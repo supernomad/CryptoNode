@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Crypto-Node</title>
+
+        <!-- Meta -->
+        <meta charset="utf-8" />
+        <meta name="description" content="An SSL and AES-256 encrypted chat and file sharing." />
+        <meta name="author" content="Supernomad - Christian Saide" />
+        <meta name="application-name" content="CryptoNode" />
+        <meta name="keywords" content="Encrypted,Chat,Node.js,AES,AES-256,Messenger,SSL,File sharing, File encryption, Encryption" />
+
+        <!-- Styles -->
+        <link rel="stylesheet" href="css/site.css" />
+    </head>
+    <body>
+        <!-- Main Site -->
+        <div id="window">
+            <ul id="stdout">
+            </ul>
+        </div>
+        <div id="input">
+            <span>></span><div class="wrapper"><input id="stdin" type="text" tabindex="0" autofocus/></div><button id="send">Send</button>
+        </div>
+
+        <!-- Scripts -->
+        <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script type="text/javascript" language="javascript" src="scripts/aes.js"></script>
+        <script type="text/javascript" language="javascript" src="scripts/format-hex.js"></script>
+        <script type="text/javascript" language="javascript" src="scripts/pbkdf2.js"></script>
+        <script type="text/javascript" language="javascript" src="scripts/site.js"></script>
+    </body>
+</html>
