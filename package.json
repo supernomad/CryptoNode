@@ -28,7 +28,17 @@
   },
   "homepage": "https://github.com/Supernomad/CryptoNode#readme",
   "dependencies": {
+    "async": "^1.5.2",
     "express": "^4.13.4",
     "socket.io": "^1.4.5"
+  },
+  "devDependencies": {
+    "del": "^2.2.0",
+    "gulp": "^3.9.1",
+    "gulp-istanbul": "^0.10.3",
+    "gulp-mocha": "^2.2.0",
+    "gulp-plumber": "^1.1.0",
+    "plumber": "^0.4.8",
+    "run-sequence": "^1.1.5"
   }
 }
