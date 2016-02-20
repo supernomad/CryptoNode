@@ -1,1 +1,14 @@
+# Npm 
 node_modules/
+
+# Bower
+bower_components/
+
+# Istanbul
+coverage/
+
+# Mocha
+test_reports/
+
+# Build output files
+artifacts/
