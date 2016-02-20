@@ -1,0 +1,32 @@
+{
+  "name": "cryptonode",
+  "description": "An encrypted chat program",
+  "main": "app.js",
+  "authors": [
+    "Supernomad <Christian Saide csaide@quantumnet.ninja>"
+  ],
+  "license": "Apache-2.0",
+  "keywords": [
+    "encrypted",
+    "encryption",
+    "aes",
+    "aws256",
+    "messaging",
+    "messenger",
+    "im",
+    "instant"
+  ],
+  "homepage": "https://github.com/Supernomad/CryptoNode",
+  "moduleType": [
+    "es6",
+    "node"
+  ],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

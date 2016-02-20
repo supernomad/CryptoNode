@@ -1,10 +1,10 @@
 'use strict';
 
 var gulp = require('gulp'),
-	spawn = require('child_process').spawn,
 	plugins = {},
-	args = {};
+	params = {};
 
+var spawn = require('child_process').spawn;
 plugins.exec = function(cmd, args, cb) {
 	var proc = spawn(cmd, args);
 	proc.stdout.on('data', function(stdout) {
@@ -16,43 +16,44 @@ plugins.exec = function(cmd, args, cb) {
 	});
 
 	proc.on('close', function(code) {
-		if(code != 0) cb(new Error('Command: ' + cmd + ' ' + args.join(' ') + ' exited with exit code: ' + code));
+		if(code != 0) cb(new Error('Command: "' + cmd + ' ' + args.join(' ') + '" exited with exit code: ' + code));
 		else cb();
 	});
-}
-plugins.del = require('del');
+};
+
 plugins.async = require('async');
 plugins.path = require('path');
 plugins.runSequence = require('run-sequence');
-plugins.fs = require('fs');
 
-plugins.mocha = require('gulp-mocha');
 plugins.istanbul = require('gulp-istanbul');
+plugins.mocha = require('gulp-mocha');
 plugins.plumber = require('gulp-plumber');
 
-args.outputPath = 'artifacts/';
-args.coveragePath = 'coverage/';
-args.testReportsPath = 'test_reports/'
-args.params = require('yargs').argv;
+params.outputPath = 'artifacts/';
+params.coveragePath = 'coverage/';
+params.testReportsPath = 'test_reports/'
+params.cli = require('minimist')(process.argv.slice(2), {});
 
 // Get Tasks
-require('./build/app_tasks')(gulp, plugins, args);
-require('./build/api_tasks')(gulp, plugins, args);
-require('./build/automation_tasks')(gulp, plugins, args);
+require('./build_tasks/app_tasks')(gulp, plugins, params);
+require('./build_tasks/api_tasks')(gulp, plugins, params);
+require('./build_tasks/automation_tasks')(gulp, plugins, params);
 
-gulp.task('clean:paths', function() {
-	return plugins.del([
-		args.outputPath,
-		args.coveragePath,
-		args.testReportsPath
-	]);
+gulp.task('clean:paths', function(cb) {
+	plugins.async.each([
+		params.outputPath,
+		params.coveragePath,
+		params.testReportsPath
+	], function(path, finished) {
+		plugins.exec('rm', ['-rf', plugins.path.join(__dirname, path)], finished);
+	}, cb);
 });
 
 gulp.task('build:paths', function(cb) {
 	plugins.async.each([
-		args.outputPath,
-		args.coveragePath,
-		args.testReportsPath
+		params.outputPath,
+		params.coveragePath,
+		params.testReportsPath
 	], function(path, finished) {
 		plugins.exec('mkdir', [plugins.path.join(__dirname, path)], finished);
 	}, cb);
