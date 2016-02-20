@@ -1,9 +1,25 @@
 'use strict';
 
-var gulp = require('gulp');
+var gulp = require('gulp'),
+	spawn = require('child_process').spawn,
+	plugins = {},
+	args = {};
 
-var plugins = {};
-plugins.exec = require('child_process').exec;
+plugins.exec = function(cmd, args, cb) {
+	var proc = spawn(cmd, args);
+	proc.stdout.on('data', function(stdout) {
+		if(stdout) console.log(stdout);
+	});
+
+	proc.stderr.on('data', function(stderr) {
+		if(stderr) console.error(stderr);
+	});
+
+	proc.on('close', function(code) {
+		if(code != 0) cb(new Error('Command: ' + cmd + ' ' + args.join(' ') + ' exited with exit code: ' + code));
+		else cb();
+	});
+}
 plugins.del = require('del');
 plugins.async = require('async');
 plugins.path = require('path');
@@ -14,7 +30,6 @@ plugins.mocha = require('gulp-mocha');
 plugins.istanbul = require('gulp-istanbul');
 plugins.plumber = require('gulp-plumber');
 
-var args = {};
 args.outputPath = 'artifacts/';
 args.coveragePath = 'coverage/';
 args.testReportsPath = 'test_reports/'
@@ -24,8 +39,6 @@ args.params = require('yargs').argv;
 require('./build/app_tasks')(gulp, plugins, args);
 require('./build/api_tasks')(gulp, plugins, args);
 require('./build/automation_tasks')(gulp, plugins, args);
-
-// Encompasing tasks, i.e. Full build, test, package
 
 gulp.task('clean:paths', function() {
 	return plugins.del([
@@ -41,17 +54,12 @@ gulp.task('build:paths', function(cb) {
 		args.coveragePath,
 		args.testReportsPath
 	], function(path, finished) {
-		var cmd = 'mkdir ' + plugins.path.join(__dirname, path);
-		plugins.exec(cmd, function(err, stdout, stderr) {
-			if(stdout) console.log(stdout);
-			if(stderr) console.error(stderr);
-			finished(err);
-		})
+		plugins.exec('mkdir', [plugins.path.join(__dirname, path)], finished);
 	}, cb);
 });
 
 gulp.task('default', [], function(cb) {
-	plugins.runSequence(['clean:paths', 'build:paths'], function() {
+	plugins.runSequence('clean:paths', 'build:paths', function() {
 		cb();
 	});
 });
